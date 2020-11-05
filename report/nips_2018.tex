@@ -1,0 +1,80 @@
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2018
+
+% ready for submission
+% \usepackage{neurips_2018}
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+     \usepackage[preprint]{nips_2018}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+%     \usepackage[final]{nips_2018}
+
+% to avoid loading the natbib package, add option nonatbib:
+%     \usepackage[nonatbib]{neurips_2018}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{packages}
+\renewcommand{\b}[1]{\boldsymbol{#1}}
+\newcommand{\pfrac}[2]{\frac{\partial #1}{\partial #2}}
+\title{Deep Learning Assignment 1}
+
+\author{%
+  Jochem Loedeman \\
+  12995282
+}
+
+\begin{document}
+
+\maketitle
+
+
+\section{MLP backprop and NumPy Implementation}
+\subsection{Evaluating the Gradients}
+\subsubsection*{Question 1.1}
+\begin{enumerate}[label=(\alph*)]
+	\item 
+	Given that
+	$$
+	\b Y = \b X \b W^T + \b B,
+	$$ we deduce that
+	$$
+	Y_{nm} = \sum_p X_{mp}W_{np} + B_{nm}.
+	$$ We will now find the required derivatives.
+	\begin{enumerate}[label=(\roman*)]
+	\item 
+	$$
+	\begin{aligned}
+	\pfrac{L}{W_{ij}} &= \sum_{m, n}\pfrac{L}{Y_{mn}}\pfrac{Y_{nm}}{W_{ij}}
+	\end{aligned}
+	$$ But
+	$$
+	\begin{aligned}
+	\pfrac{Y_{nm}}{W_{ij}} &= \sum_pX_{mp}\pfrac{W_{np}}{W_{ij}} = \sum_pX_{mp}\delta_{ni}\delta_{pj} = X_{mj}\delta_{ni},
+	\end{aligned}
+	$$ and hence
+	$$
+	\begin{aligned}
+	\pfrac{L}{W_{ij}} &= \sum_{m, n}\pfrac{L}{Y_{mn}}X_{mj}\delta_{ni} = \sum_m \pfrac{L}{Y_{mi}}X_{mj}.
+	\end{aligned}
+	$$ In matrix-vector notation, this is equivalent to
+	$$
+	\pfrac{L}{\b W} = \left(\pfrac{L}{\b Y}\right)^T\b X
+	$$
+	\item
+\end{enumerate}
+\end{enumerate}
+
+
+\end{document}
