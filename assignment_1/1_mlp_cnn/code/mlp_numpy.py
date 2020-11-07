@@ -46,7 +46,6 @@ class MLP(object):
         else:
             hidden_layers = []
             linear_sizes = [n_inputs] + n_hidden
-
             for i in range(1, len(linear_sizes)):
                 hidden_layers.extend([LinearModule(linear_sizes[i - 1], linear_sizes[i]), ELUModule()])
             self.hidden_layers = hidden_layers

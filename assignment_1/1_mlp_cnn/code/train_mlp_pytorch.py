@@ -50,7 +50,13 @@ def accuracy(predictions, targets):
     ########################
     # PUT YOUR CODE HERE  #
     #######################
-    raise NotImplementedError
+    batch_size = predictions.shape[0]
+    correct_predictions = 0
+    for i in range(batch_size):
+        if torch.argmax(predictions[i]) == targets[i]:
+            correct_predictions += 1
+
+    accuracy = correct_predictions / batch_size
     ########################
     # END OF YOUR CODE    #
     #######################
@@ -78,16 +84,63 @@ def train():
         dnn_hidden_units = [int(dnn_hidden_unit_) for dnn_hidden_unit_ in dnn_hidden_units]
     else:
         dnn_hidden_units = []
-    
-    neg_slope = FLAGS.neg_slope
-    
+
     ########################
     # PUT YOUR CODE HERE  #
     #######################
-    raise NotImplementedError
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    # device = torch.device('cpu')
+    cifar10 = cifar10_utils.get_cifar10(FLAGS.data_dir, one_hot=False)
+    mlp_model = MLP(3072, dnn_hidden_units, 10)
+    loss_module = nn.CrossEntropyLoss()
+    test_images, test_labels = torch.from_numpy(cifar10['test'].images).to(device), \
+                               torch.from_numpy(cifar10['test'].labels).to(device)
+
+    test_vectors = reshape_images(test_images)
+
+    accuracies = []
+    mlp_model.to(device)
+    optimizer = torch.optim.SGD(mlp_model.parameters(), lr=FLAGS.learning_rate)
+    mlp_model.train()
+    for i in range(FLAGS.max_steps):
+
+        # load data
+        images, labels = cifar10['train'].next_batch(FLAGS.batch_size)
+        image_vectors = reshape_images(images)
+        image_vectors, labels = torch.from_numpy(image_vectors), torch.from_numpy(labels)
+        image_vectors, labels = image_vectors.to(device), labels.to(device)
+        labels.to(device)
+
+        # forward pass
+        model_pred = mlp_model(image_vectors)
+
+        # calculate the loss
+
+        loss = loss_module(model_pred, labels)
+
+        # backward pass
+        optimizer.zero_grad()
+        loss.backward()
+
+        # update the parameters
+        optimizer.step()
+
+        # evaluate the model on the data set every eval_freq steps
+        mlp_model.eval()
+        if i % FLAGS.eval_freq == 0:
+            test_pred = mlp_model(test_vectors)
+            test_accuracy = accuracy(test_pred, test_labels)
+            accuracies.append(test_accuracy)
+        mlp_model.train()
+
+    print(accuracies)
     ########################
     # END OF YOUR CODE    #
     #######################
+
+
+def reshape_images(images):
+    return images.reshape((images.shape[0], -1))
 
 
 def print_flags():

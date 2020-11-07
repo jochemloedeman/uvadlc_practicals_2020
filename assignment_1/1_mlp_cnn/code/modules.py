@@ -267,9 +267,6 @@ class ELUModule(object):
         self.input = x
         out = self.elu(self.input)
 
-        # for element in np.nditer(out):
-        #     element = elu_scalar(element)
-        #
         ########################
         # END OF YOUR CODE    #
         #######################
@@ -303,5 +300,4 @@ if __name__ == '__main__':
     output_data = np.array([[1, 0], [0, 1]])
     module = LinearModule(2, 3)
     a = module.forward(input_data)
-    # b = module.backward(input_data, output_data)
-    print('hi')
+    b = module.backward(input_data, output_data)
