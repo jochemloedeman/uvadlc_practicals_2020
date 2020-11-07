@@ -11,7 +11,7 @@ import numpy as np
 import os
 from mlp_numpy import MLP
 from modules import CrossEntropyModule
-import cifar10_utils
+import cifar10_utils as cifar10_utils
 
 # Default constants
 DNN_HIDDEN_UNITS_DEFAULT = '100'
@@ -47,7 +47,15 @@ def accuracy(predictions, targets):
     ########################
     # PUT YOUR CODE HERE  #
     #######################
-    raise NotImplementedError
+    batch_size = predictions.shape[0]
+    correct_predictions = 0
+
+    for i in range(batch_size):
+        prediction_index = np.argmax(predictions[i])
+        if predictions[i] @ targets[i] == predictions[i][prediction_index]:
+            correct_predictions += 1
+
+    accuracy = correct_predictions / batch_size
     ########################
     # END OF YOUR CODE    #
     #######################
@@ -78,10 +86,44 @@ def train():
     ########################
     # PUT YOUR CODE HERE  #
     #######################
-    raise NotImplementedError
+
+    cifar10 = cifar10_utils.get_cifar10(FLAGS.data_dir)
+    mlp_model = MLP(3072, dnn_hidden_units, 10)
+    loss_module = CrossEntropyModule()
+
+    test_images, test_labels = cifar10['test'].images, cifar10['test'].labels
+    test_vectors = reshape_images(test_images)
+
+    accuracies = []
+    for i in range(FLAGS.max_steps):
+        images, labels = cifar10['train'].next_batch(FLAGS.batch_size)
+        image_vectors = reshape_images(images)
+
+        # forward pass
+        model_pred = mlp_model.forward(image_vectors)
+
+        # backward pass
+        loss_grad = loss_module.backward(model_pred, labels)
+        mlp_model.backward(loss_grad)
+
+        # update all weights and biases
+        mlp_model.update(FLAGS.learning_rate)
+
+        # evaluate the model on the data set every eval_freq steps
+        if i % FLAGS.eval_freq == 0:
+            test_pred = mlp_model.forward(test_vectors)
+            test_accuracy = accuracy(test_pred, test_labels)
+            accuracies.append(test_accuracy)
+
+    print('hi')
+
     ########################
     # END OF YOUR CODE    #
     #######################
+
+
+def reshape_images(images):
+    return images.reshape((images.shape[0], -1))
 
 
 def print_flags():

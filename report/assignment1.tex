@@ -111,7 +111,7 @@
 	$$
 	\pfrac{L}{X_{ij}} = \sum_{m, n}\pfrac{L}{Y_{mn}}h'(X_{mn})\delta_{mi}\delta_{nj} = \pfrac{L}{Y_{ij}}h'(X_{ij}).
 	$$ Or, in matrix-vector notation:
-	$$\pfrac{L}{\b X} = \pfrac{L}{Y} \circ h'(\b X)$$
+	$$\pfrac{L}{\b X} = \pfrac{L}{\b Y} \circ h'(\b X)$$
 	\item
 	\begin{enumerate}[label=(\roman*)]
 		\item
@@ -128,7 +128,7 @@
 		We get
 		$$
 		\begin{aligned}
-		\pfrac{L}{X_{ij}} &= \sum_{m, n}\pfrac{L}{Y_{mn}}Y_{mn}\delta_{mi}\left(\delta_{nj} - Y_{mj}\right) \\ &= \sum_n\pfrac{L}{Y_{in}}Y_{in}\left(\delta_{nj} - Y_{mj}\right)
+		\pfrac{L}{X_{ij}} &= \sum_{m, n}\pfrac{L}{Y_{mn}}Y_{mn}\delta_{mi}\left(\delta_{nj} - Y_{mj}\right) \\ &= \sum_n\pfrac{L}{Y_{in}}Y_{in}\left(\delta_{nj} - Y_{ij}\right)
 		\end{aligned}
 		$$
 		\item 

@@ -37,7 +37,22 @@ class MLP(object):
         ########################
         # PUT YOUR CODE HERE  #
         #######################
-        raise NotImplementedError
+        if not n_hidden:
+            self.hidden_layers = None
+            self.output = LinearModule(n_inputs, n_classes)
+            self.softmax = SoftMaxModule()
+            self.linear_modules = [self.output]
+
+        else:
+            hidden_layers = []
+            linear_sizes = [n_inputs] + n_hidden
+
+            for i in range(1, len(linear_sizes)):
+                hidden_layers.extend([LinearModule(linear_sizes[i - 1], linear_sizes[i]), ELUModule()])
+            self.hidden_layers = hidden_layers
+            self.output = LinearModule(n_hidden[-1], n_classes)
+            self.softmax = SoftMaxModule()
+            self.linear_modules = [mod for mod in self.hidden_layers if isinstance(mod, LinearModule)] + [self.output]
         ########################
         # END OF YOUR CODE    #
         #######################
@@ -59,7 +74,12 @@ class MLP(object):
         ########################
         # PUT YOUR CODE HERE  #
         #######################
-        raise NotImplementedError
+        if self.hidden_layers is not None:
+            for mod in self.hidden_layers:
+                x = mod.forward(x)
+        x = self.output.forward(x)
+        x = self.softmax.forward(x)
+        out = x
         ########################
         # END OF YOUR CODE    #
         #######################
@@ -80,9 +100,25 @@ class MLP(object):
         ########################
         # PUT YOUR CODE HERE  #
         #######################
-        raise NotImplementedError
+        dout = self.softmax.backward(dout)
+        dout = self.output.backward(dout)
+        for mod in self.hidden_layers[::-1]:
+            dout = mod.backward(dout)
         ########################
         # END OF YOUR CODE    #
         #######################
 
         return
+
+    def update(self, learning_rate):
+        for mod in self.linear_modules:
+            mod.params['weight'] -= learning_rate * mod.grads['weight']
+            mod.params['bias'] -= learning_rate * mod.grads['bias']
+
+
+if __name__ == '__main__':
+    mlp = MLP(3, [4], 2)
+    inputs = np.array([24, 2, 5])[np.newaxis, :]
+    output = mlp.forward(inputs)
+    mlp.backward(np.array([1, 0])[np.newaxis, :])
+    print('hi')
