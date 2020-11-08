@@ -26,8 +26,7 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 \usepackage{packages}
-\renewcommand{\b}[1]{\boldsymbol{#1}}
-\newcommand{\pfrac}[2]{\frac{\partial #1}{\partial #2}}
+
 \title{Deep Learning Assignment 1}
 
 \author{%
@@ -142,6 +141,31 @@
 		$$
 	\end{enumerate}
 \end{enumerate}
-
-
+\subsection{NumPy Implementation}
+\subsubsection*{Question 1.2}
+Training and testing the network for the default parameters, the following loss and accuracy curves as shown in Figure \ref{fig:npcurves} were obtained. The classifier reaches an asymptotic accuracy of approximately $0.48$.
+\begin{figure}[H]
+	\centering
+	\subfloat[]{\includegraphics[width=.5\textwidth]{numpyAccuracy.eps}}
+	\subfloat[]{\includegraphics[width=.5\textwidth]{numpyLoss.eps}}
+	\caption{Accuracy and loss for the NumPy implementation of the MLP}
+	\label{fig:npcurves}
+\end{figure}
+\section{PyTorch MLP}
+\subsubsection*{Question 2.1}
+Next, the same MLP was implemented using PyTorch. With the default parameters, an accuracy of 0.46 was reached. The following changes were made to the default network to increase the performance:
+\begin{itemize}
+	\item A second layer, also consisting of $100$ units was added. This modification in itself did not increase the accuracy. However, together with the next modification in this list, it increased accuracy with $0.02$.
+	\item The larger network needed more iterations for the accuracy to converge, so the maximum number of steps was increased to $3000$. It led to another accuracy gain of $0.02$.
+	\item The optimizer was changed to Adam. Without this modification, the others seem to have much less effect. Changing from SGD to Adam with the other modifications in place, the accuracy increase is $0.07$.
+	\item A batch normalization module was added after each ELU unit. It increased the accuracy with $0.06$ with respect to the situation were the other modifications are applied, but no batch normalization is used.
+\end{itemize}
+Additionally, different learning rates and batch sizes were tried, but no significant increase in the accuracy was observed. In Figure \ref{fig:torchcurves}, the accuracy and loss curves for the optimal settings as described above are plotted. An accuracy of $0.54$ was attained.
+\begin{figure}[H]
+	\centering
+	\subfloat[]{\includegraphics[width=.5\textwidth]{torchAccuracy.eps}}
+	\subfloat[]{\includegraphics[width=.5\textwidth]{torchLoss.eps}}
+	\caption{Accuracy and loss for the PyTorch implementation of the MLP}
+	\label{fig:torchcurves}
+\end{figure}
 \end{document}

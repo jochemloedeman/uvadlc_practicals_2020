@@ -29,9 +29,7 @@ class MLP(nn.Module):
           n_classes: number of classes of the classification problem.
                      This number is required in order to specify the
                      output dimensions of the MLP
-    
-        TODO:
-        Implement initialization of the network.
+
         """
         
         ########################
@@ -45,7 +43,8 @@ class MLP(nn.Module):
             linear_sizes = [n_inputs] + n_hidden
             hidden_layers = nn.ModuleList([])
             for i in range(1, len(linear_sizes)):
-                hidden_layers.extend([nn.Linear(linear_sizes[i - 1], linear_sizes[i]), nn.ELU()])
+                hidden_layers.extend([nn.Linear(linear_sizes[i - 1], linear_sizes[i]),
+                                      nn.ELU()])
             self.hidden_layers = hidden_layers
             self.output = nn.Linear(n_hidden[-1], n_classes)
         ########################

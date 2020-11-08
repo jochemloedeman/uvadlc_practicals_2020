@@ -1,6 +1,7 @@
 \ProvidesPackage{packages}
 \def\bibsection{\section*{\refname}}
 \usepackage{amsfonts, amssymb, amsmath, hyperref, commath, mathtools, physics, cleveref, enumitem, float, siunitx, pdfpages, lmodern, float}
+\usepackage{graphicx, subfig}
 \makeatletter
 
 \AtBeginDocument{\let\LS@rot\@undefined}
@@ -9,7 +10,7 @@
 \renewcommand{\d}[1]{\ensuremath{\operatorname{d}\!{#1}}}
 \newcommand{\pardif}[2][]{\frac{\partial #1}{\partial #2}}
 \newcommand*\Diff[1]{\mathop{}\!\mathrm{d^#1}}
-\newcommand{\metricup}{g^{\mu\nu}}
+\captionsetup[subfigure]{labelformat=empty}
 \newcommand{\blankpage}{
 	\newpage
 	\thispagestyle{empty}
@@ -19,9 +20,8 @@
 \newcommand{\diag}{\text{diag}}
 \DeclareSIUnit \parsec {pc}
 \DeclareSIUnit \gyr {gyr}
-\usepackage[footnotesize, labelfont=bf]{caption}
-\newcommand{\metricdown}{g_{\mu\nu}}
-\newcommand{\christoffel}[3]{\Gamma^{#1}_{#2 #3}}
+\renewcommand{\b}[1]{\boldsymbol{#1}}
+\newcommand{\pfrac}[2]{\frac{\partial #1}{\partial #2}}
 \addtolength{\jot}{.4em}
 
 \hypersetup{

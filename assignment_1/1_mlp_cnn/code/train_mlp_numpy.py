@@ -12,6 +12,7 @@ import os
 from mlp_numpy import MLP
 from modules import CrossEntropyModule
 import cifar10_utils as cifar10_utils
+import matplotlib.pyplot as plt
 
 # Default constants
 DNN_HIDDEN_UNITS_DEFAULT = '100'
@@ -63,6 +64,13 @@ def accuracy(predictions, targets):
     return accuracy
 
 
+def plot_curve(values, label):
+    plt.plot(values, label=label)
+    plt.xlabel('Batches')
+    plt.ylabel(label)
+    plt.savefig(fname='numpy' + label + '.eps', format='eps', bbox_inches='tight', dpi=200)
+    plt.show()
+
 def train():
     """
     Performs training and evaluation of MLP model.
@@ -95,6 +103,8 @@ def train():
     test_vectors = reshape_images(test_images)
 
     accuracies = []
+    losses = []
+
     for i in range(FLAGS.max_steps):
         images, labels = cifar10['train'].next_batch(FLAGS.batch_size)
         image_vectors = reshape_images(images)
@@ -103,6 +113,7 @@ def train():
         model_pred = mlp_model.forward(image_vectors)
 
         # backward pass
+        loss = loss_module.forward(model_pred, labels)
         loss_grad = loss_module.backward(model_pred, labels)
         mlp_model.backward(loss_grad)
 
@@ -114,9 +125,11 @@ def train():
             test_pred = mlp_model.forward(test_vectors)
             test_accuracy = accuracy(test_pred, test_labels)
             accuracies.append(test_accuracy)
+            losses.append(loss)
 
-    print('hi')
-
+    print(accuracies)
+    plot_curve(accuracies, 'Accuracy')
+    plot_curve(losses, 'Loss')
     ########################
     # END OF YOUR CODE    #
     #######################
