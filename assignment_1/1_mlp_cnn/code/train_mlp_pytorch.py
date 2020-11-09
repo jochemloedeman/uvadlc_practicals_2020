@@ -69,7 +69,6 @@ def plot_curve(values, label):
     plt.plot(values, label=label)
     plt.xlabel('Batches')
     plt.ylabel(label)
-    # plt.legend()
     plt.savefig(fname='torch' + label + '.eps', format='eps', bbox_inches='tight', dpi=200)
     plt.show()
 
@@ -101,6 +100,7 @@ def train():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     cifar10 = cifar10_utils.get_cifar10(FLAGS.data_dir, one_hot=False)
     mlp_model = MLP(3072, dnn_hidden_units, 10)
+    print(mlp_model)
     loss_module = nn.CrossEntropyLoss()
     test_images, test_labels = torch.from_numpy(cifar10['test'].images).to(device), \
                                torch.from_numpy(cifar10['test'].labels).to(device)

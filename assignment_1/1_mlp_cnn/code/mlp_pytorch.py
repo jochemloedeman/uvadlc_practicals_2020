@@ -9,13 +9,14 @@ from __future__ import print_function
 import torch.nn as nn
 import torch
 
+
 class MLP(nn.Module):
     """
     This class implements a Multi-layer Perceptron in PyTorch.
     It handles the different layers and parameters of the model.
     Once initialized an MLP object can perform forward.
     """
-    
+
     def __init__(self, n_inputs, n_hidden, n_classes):
         """
         Initializes MLP object.
@@ -31,26 +32,26 @@ class MLP(nn.Module):
                      output dimensions of the MLP
 
         """
-        
+
         ########################
         # PUT YOUR CODE HERE  #
         #######################
         super().__init__()
-        if not n_hidden:
-            self.hidden_layers = None
-            self.output = nn.Linear(n_inputs, n_classes)
-        else:
-            linear_sizes = [n_inputs] + n_hidden
-            hidden_layers = nn.ModuleList([])
-            for i in range(1, len(linear_sizes)):
-                hidden_layers.extend([nn.Linear(linear_sizes[i - 1], linear_sizes[i]),
-                                      nn.ELU()])
-            self.hidden_layers = hidden_layers
-            self.output = nn.Linear(n_hidden[-1], n_classes)
+        sizes = [n_inputs] + n_hidden
+        layers = []
+        for i in range(1, len(sizes)):
+            layers.extend([nn.Linear(sizes[i - 1], sizes[i]),
+                           nn.ELU(), nn.BatchNorm1d(sizes[i])])
+        layers.append(nn.Linear(sizes[-1], n_classes))
+        self.layers = nn.Sequential(*layers)
+        for mod in self.layers:
+            if isinstance(mod, nn.Linear):
+                nn.init.normal_(mod.weight, mean=0, std=0.0001)
+
         ########################
         # END OF YOUR CODE    #
         #######################
-    
+
     def forward(self, x):
         """
         Performs forward pass of the input. Here an input tensor x is transformed through
@@ -64,19 +65,15 @@ class MLP(nn.Module):
         TODO:
         Implement forward pass of the network.
         """
-        
+
         ########################
         # PUT YOUR CODE HERE  #
         #######################
-        if self.hidden_layers is not None:
-            for mod in self.hidden_layers:
-                x = mod(x)
-        x = self.output(x)
-        out = x
+        out = self.layers(x)
         ########################
         # END OF YOUR CODE    #
         #######################
-        
+
         return out
 
 

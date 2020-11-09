@@ -28,10 +28,6 @@ class CustomLayerNormAutograd(nn.Module):
         Args:
           n_neurons: int specifying the number of neurons
           eps: small float to be added to the variance for stability
-        
-        TODO:
-          Save parameters for the number of neurons and eps.
-          Initialize parameters gamma and beta via nn.Parameter
         """
         super(CustomLayerNormAutograd, self).__init__()
         
@@ -39,8 +35,10 @@ class CustomLayerNormAutograd(nn.Module):
         # PUT YOUR CODE HERE  #
         #######################
         
-        raise NotImplementedError
-        
+        self.n_neurons = n_neurons
+        self.eps = eps
+        self.gamma = nn.Parameter(torch.ones(self.n_neurons))
+        self.beta = nn.Parameter(torch.zeros(self.n_neurons))
         ########################
         # END OF YOUR CODE    #
         #######################
@@ -64,8 +62,11 @@ class CustomLayerNormAutograd(nn.Module):
         # PUT YOUR CODE HERE  #
         #######################
 
-        raise NotImplementedError
-
+        assert input.shape[1] == self.n_neurons
+        mean = torch.mean(input, dim=1)
+        variance = torch.var(input, unbiased=False, dim=1)
+        normalized_input = (input - mean[:, None]) / torch.sqrt(variance**2 + self.eps)
+        out = self.gamma * normalized_input + self.beta
         ########################
         # END OF YOUR CODE    #
         #######################

@@ -34,21 +34,14 @@ class MLP(object):
         ########################
         # PUT YOUR CODE HERE  #
         #######################
-        if not n_hidden:
-            self.hidden_layers = None
-            self.output = LinearModule(n_inputs, n_classes)
-            self.softmax = SoftMaxModule()
-            self.linear_modules = [self.output]
-
-        else:
-            hidden_layers = []
-            linear_sizes = [n_inputs] + n_hidden
-            for i in range(1, len(linear_sizes)):
-                hidden_layers.extend([LinearModule(linear_sizes[i - 1], linear_sizes[i]), ELUModule()])
-            self.hidden_layers = hidden_layers
-            self.output = LinearModule(n_hidden[-1], n_classes)
-            self.softmax = SoftMaxModule()
-            self.linear_modules = [mod for mod in self.hidden_layers if isinstance(mod, LinearModule)] + [self.output]
+        layers = []
+        sizes = [n_inputs] + n_hidden
+        for i in range(1, len(sizes)):
+            layers.extend([LinearModule(sizes[i - 1], sizes[i]), ELUModule()])
+        layers.append(LinearModule(n_hidden[-1], n_classes))
+        layers.append(SoftMaxModule())
+        self.layers = layers
+        self.linear_modules = [mod for mod in self.layers if isinstance(mod, LinearModule)]
         ########################
         # END OF YOUR CODE    #
         #######################
@@ -68,11 +61,8 @@ class MLP(object):
         ########################
         # PUT YOUR CODE HERE  #
         #######################
-        if self.hidden_layers is not None:
-            for mod in self.hidden_layers:
-                x = mod.forward(x)
-        x = self.output.forward(x)
-        x = self.softmax.forward(x)
+        for mod in self.layers:
+            x = mod.forward(x)
         out = x
         ########################
         # END OF YOUR CODE    #
@@ -94,9 +84,7 @@ class MLP(object):
         ########################
         # PUT YOUR CODE HERE  #
         #######################
-        dout = self.softmax.backward(dout)
-        dout = self.output.backward(dout)
-        for mod in self.hidden_layers[::-1]:
+        for mod in self.layers[::-1]:
             dout = mod.backward(dout)
         ########################
         # END OF YOUR CODE    #

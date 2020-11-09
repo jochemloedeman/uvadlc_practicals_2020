@@ -153,7 +153,7 @@ Training and testing the network for the default parameters, the following loss 
 \end{figure}
 \section{PyTorch MLP}
 \subsubsection*{Question 2.1}
-Next, the same MLP was implemented using PyTorch. With the default parameters, an accuracy of 0.46 was reached. The following changes were made to the default network to increase the performance:
+Next, the same MLP was implemented using PyTorch. With the default parameters, an accuracy of 0.48 was reached. The following changes were made to the default network to increase the performance:
 \begin{itemize}
 	\item A second layer, also consisting of $100$ units was added. This modification in itself did not increase the accuracy. However, together with the next modification in this list, it increased accuracy with $0.02$.
 	\item The larger network needed more iterations for the accuracy to converge, so the maximum number of steps was increased to $3000$. It led to another accuracy gain of $0.02$.
@@ -168,4 +168,6 @@ Additionally, different learning rates and batch sizes were tried, but no signif
 	\caption{Accuracy and loss for the PyTorch implementation of the MLP}
 	\label{fig:torchcurves}
 \end{figure}
+\subsubsection*{Question 2.1}
+Using Tanh instead of ELU mainly has drawbacks. The most important one is the problem of vanishing gradients. Since the derivative of Tanh always lies between 0 and 1 (except at identically 0), the gradients attenuate during backpropagation. As a consequence, the shallow layers learn much slower compared to the deeper layers. A possible advantage of Tanh over ELU is that it is zero-centered, meaning that its average output is zero. Zero-centered inputs lead to better training, so a zero-centered activation function is desired. This problem can however be solved by adding batch normalization between layers.
 \end{document}

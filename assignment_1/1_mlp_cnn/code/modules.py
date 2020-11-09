@@ -230,11 +230,11 @@ class CrossEntropyModule(object):
 
 
 def elu_scalar(x):
-    return x if x >= 0 else (np.exp(x) - 1)
+    return np.where(x > 0, x, np.exp(x) - 1)
 
 
 def d_elu_scalar(x):
-    return 1 if x > 0 else np.exp(x)
+    return np.where(x > 0, 1, np.exp(x))
 
 
 class ELUModule(object):
