@@ -143,7 +143,7 @@
 \end{enumerate}
 \subsection{NumPy Implementation}
 \subsubsection*{Question 1.2}
-Training and testing the network for the default parameters, the following loss and accuracy curves as shown in Figure \ref{fig:npcurves} were obtained. The classifier reaches an asymptotic accuracy of approximately $0.48$.
+Training and testing the network for the default parameters, the following loss and accuracy curves as shown in Figure \ref{fig:npcurves} were obtained. Note that the losses are with respect to the training set, whereas the accuracy is obtained from the test set. The classifier reaches an asymptotic accuracy of approximately $0.48$.
 \begin{figure}[H]
 	\centering
 	\subfloat[]{\includegraphics[width=.5\textwidth]{numpyAccuracy.eps}}
@@ -157,10 +157,10 @@ Next, the same MLP was implemented using PyTorch. With the default parameters, a
 \begin{itemize}
 	\item A second layer, also consisting of $100$ units was added. This modification in itself did not increase the accuracy. However, together with the next modification in this list, it increased accuracy with $0.02$.
 	\item The larger network needed more iterations for the accuracy to converge, so the maximum number of steps was increased to $3000$. It led to another accuracy gain of $0.02$.
-	\item The optimizer was changed to Adam. Without this modification, the others seem to have much less effect. Changing from SGD to Adam with the other modifications in place, the accuracy increase is $0.07$.
-	\item A batch normalization module was added after each ELU unit. It increased the accuracy with $0.06$ with respect to the situation were the other modifications are applied, but no batch normalization is used.
+	\item The optimizer was changed to Adam. Without this modification, the others seem to have much less effect. Changing from SGD to Adam with the other modifications in place, the accuracy increase is $0.07$. Adam improves on regular SGD by including an adaptive learning rate, momentum and bias correction.
+	\item A batch normalization module was added after each ELU unit. It increased the accuracy with $0.06$ with respect to the situation were the other modifications are applied, but no batch normalization is used. Batch normalization 
 \end{itemize}
-Additionally, different learning rates and batch sizes were tried, but no significant increase in the accuracy was observed. In Figure \ref{fig:torchcurves}, the accuracy and loss curves for the optimal settings as described above are plotted. An accuracy of $0.54$ was attained.
+Additionally, different learning rates and batch sizes were tried, but no significant increase in the accuracy was observed. In Figure \ref{fig:torchcurves}, the accuracy and loss curves for the optimal settings as described above are plotted. An accuracy of $0.54$ was attained. The shape of the curves are no surprise, looking similar to the ones for the NumPy implementation. An interesting (and expected) feature is that the accuracy curve converges around 15 batches, whereas the loss keeps decreasing. This can be regarded as a first sign of overfitting, since the generalization power of the model does not increase, but performance on the training set does. 
 \begin{figure}[H]
 	\centering
 	\subfloat[]{\includegraphics[width=.5\textwidth]{torchAccuracy.eps}}

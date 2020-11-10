@@ -147,6 +147,9 @@ def train():
 
         mlp_model.train()
 
+    for parameter in mlp_model.named_parameters():
+        print(parameter)
+
     print(" %s seconds " % (time.time() - start_time))
     print(accuracies)
     plot_curve(accuracies, 'Accuracy')
