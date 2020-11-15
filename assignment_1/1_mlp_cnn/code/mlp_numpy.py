@@ -76,9 +76,6 @@ class MLP(object):
 
         Args:
           dout: gradients of the loss
-
-        TODO:
-        Implement backward pass of the network.
         """
 
         ########################
@@ -93,6 +90,13 @@ class MLP(object):
         return
 
     def update(self, learning_rate):
+        """
+        Performs the SGD update step
+
+        Args:
+          learning_rate
+        """
+
         for mod in self.linear_modules:
             mod.params['weight'] -= learning_rate * mod.grads['weight']
             mod.params['bias'] -= learning_rate * mod.grads['bias']

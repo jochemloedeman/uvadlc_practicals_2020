@@ -1,0 +1,19 @@
+\begin{thebibliography}{1}
+
+\bibitem{ba2016layer}
+J.~L. Ba, J.~R. Kiros, and G.~E. Hinton.
+\newblock Layer normalization.
+\newblock {\em arXiv preprint arXiv:1607.06450}, 2016.
+
+\bibitem{ioffe2015batch}
+S.~Ioffe and C.~Szegedy.
+\newblock Batch normalization: Accelerating deep network training by reducing
+  internal covariate shift.
+\newblock {\em arXiv preprint arXiv:1502.03167}, 2015.
+
+\bibitem{kingma2019method}
+D.~P. Kingma and J.~A. Ba.
+\newblock A method for stochastic optimization. arxiv 2014.
+\newblock {\em arXiv preprint arXiv:1412.6980}, 434, 2019.
+
+\end{thebibliography}

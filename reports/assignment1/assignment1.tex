@@ -26,6 +26,7 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 \usepackage{packages}
+\newcommand{\pfrac}[2]{\frac{\partial #1}{\partial #2}}
 
 \title{Deep Learning Assignment 1}
 
@@ -157,7 +158,7 @@ Next, the same MLP was implemented using PyTorch. With the default parameters, a
 \begin{itemize}
 	\item A second layer, also consisting of $100$ units was added. This modification in itself did not increase the accuracy. However, together with the next modification in this list, it increased accuracy with $0.02$.
 	\item The larger network needed more iterations for the accuracy to converge, so the maximum number of steps was increased to $3000$. It led to another accuracy gain of $0.02$.
-	\item The optimizer was changed to Adam. Without this modification, the others seem to have much less effect. Changing from SGD to Adam with the other modifications in place, the accuracy increase is $0.07$. Adam improves on regular SGD by including an adaptive learning rate, momentum and bias correction.
+	\item The optimizer was changed to Adam. Without this modification, the others seem to have much less effect. Changing from SGD to Adam with the other modifications in place, the accuracy increase is $0.07$. Adam improves on regular SGD by including an adaptive learning rate, momentum and bias-corrected parameters \cite{kingma2019method}.
 	\item A batch normalization module was added after each ELU unit. It increased the accuracy with $0.06$ with respect to the situation were the other modifications are applied, but no batch normalization is used. Batch normalization 
 \end{itemize}
 Additionally, different learning rates and batch sizes were tried, but no significant increase in the accuracy was observed. In Figure \ref{fig:torchcurves}, the accuracy and loss curves for the optimal settings as described above are plotted. An accuracy of $0.54$ was attained. The shape of the curves are no surprise, looking similar to the ones for the NumPy implementation. An interesting (and expected) feature is that the accuracy curve converges around 15 batches, whereas the loss keeps decreasing. This can be regarded as a first sign of overfitting, since the generalization power of the model does not increase, but performance on the training set does. 
@@ -168,6 +169,78 @@ Additionally, different learning rates and batch sizes were tried, but no signif
 	\caption{Accuracy and loss for the PyTorch implementation of the MLP}
 	\label{fig:torchcurves}
 \end{figure}
-\subsubsection*{Question 2.1}
+\subsubsection*{Question 2.2}
 Using Tanh instead of ELU mainly has drawbacks. The most important one is the problem of vanishing gradients. Since the derivative of Tanh always lies between 0 and 1 (except at identically 0), the gradients attenuate during backpropagation. As a consequence, the shallow layers learn much slower compared to the deeper layers. A possible advantage of Tanh over ELU is that it is zero-centered, meaning that its average output is zero. Zero-centered inputs lead to better training, so a zero-centered activation function is desired. This problem can however be solved by adding batch normalization between layers.
+\section{Custom Module: Layer Normalization}
+\subsection{Automatic differentiation}
+\subsubsection*{Question 3.1}
+See the accompanying code
+\subsection{Manual implementation of backward pass}
+\subsubsection*{Question 3.2}
+\begin{enumerate}[label=(\alph*)]
+	\item 
+	Given that
+	$$
+	Y_{sj} = \gamma_i\hat{X}_{sj} + \beta_j,
+	$$ we will find the required derivatives. 
+	\begin{enumerate}[label=(\roman*)]
+		\item 
+		$$
+		\pfrac{L}{\gamma_i} = \sum_{s,j}\pfrac{L}{Y_{sj}}\pfrac{Y_{sj}}{\gamma_i}.
+		$$
+		But
+		$$
+		\pfrac{Y_{sj}}{\gamma_i} = \hat{X}_{sj}\delta_{ij},
+		$$
+		and therefore
+		$$
+		\pfrac{L}{\gamma_i} = \sum_{s,j}\pfrac{L}{Y_{sj}}\hat{X}_{sj}\delta_{ij} = \sum_s\pfrac{L}{Y_{si}}\hat{X}_{si}.
+		$$ In vectorized form, this is equivalent to
+		$$
+		\pfrac{L}{\b \gamma} = \left(\pfrac{L}{\b Y}\right)^T\hat{\b X}
+		$$
+		\item
+		$$
+		\pfrac{L}{\beta_i} = \sum_{s,j}\pfrac{L}{Y_{sj}}\pfrac{Y_{sj}}{\beta_i}.
+		$$
+		But
+		$$
+		\pfrac{Y_{sj}}{\beta_i} = \delta_{ij},
+		$$
+		and therefore
+		$$
+		\pfrac{L}{\beta_i} = \sum_{s,j}\pfrac{L}{Y_{sj}}\delta_{ij} = \sum_s\pfrac{L}{Y_{si}}.
+		$$ In vectorized form, this is equivalent to
+		$$
+		\pfrac{L}{\b \gamma} = \b 1\pfrac{L}{\b Y}
+		$$ where $\b 1$ is the $1 \times S$ ones-vector.
+		\item 
+		$$
+		\pfrac{L}{X_{ri}} = \sum_{s,j}\pfrac{L}{Y_{sj}}\pfrac{Y_{sj}}{X_{ri}} = \sum_{s,j}\pfrac{L}{Y_{sj}}\pfrac{Y_{sj}}{\hat{X}_{sj}}\pfrac{\hat{X}_{sj}}{X_{ri}},
+		$$ where we used the fact that $Y_{sj}$ depends only explicitly on $\hat{\b X}$ via $\hat{X}_{sj}$, such that we do not need to write another sum over the elements of $\hat{\b X}$. Notice that $\hat{X}_{sj}$ depends both implicitly and explicitly on $X_{ri}$. Therefore we calculate the total derivative of $\hat{X}_{sj} = f(X_{sj}, \mu_s, \sigma^2_s)$ with respect to $X_{ri}$.
+		$$
+		\begin{aligned}
+		\pfrac{f}{X_{ri}} &= \pfrac{\hat{X}_{sj}}{X_{ri}} + \pfrac{\hat{X}_{sj}}{\mu_s}\pfrac{\mu_s}{X_{ri}} + \pfrac{\hat{X}_{sj}}{\sigma_s^2}\pfrac{\sigma_s^2}{X_{ri}} \\ &= \delta_{rs}\delta_{ij} -\frac{1}{\sqrt{\sigma_s^2 + \epsilon}}\cdot\frac{1}{M}\sum_l\delta_{rs}\delta_{li} - \frac{1}{2}\left(X_{sj} - \mu_s\right)\left(\sigma_s^2 + \epsilon\right)^{-3 / 2}\cdot\frac{2}{M}\sum_l\left(X_{sl} - \mu_s\right)\delta_{rs}\delta_{li} \\ &= \delta_{rs}\delta_{ij} -\frac{\delta_{rs}}{M\sqrt{\sigma_s^2 + \epsilon}}\sum_l\delta_{li} - \frac{\left(\sigma_s^2 + \epsilon\right)^{-3 / 2}}{M}\left(X_{sj} - \mu_s\right)\left(X_{si} - \mu_s\right)\delta_{rs} 
+		\end{aligned}
+		$$ The remaining expression to find is $\pfrac{Y_{sj}}{\hat{X}_{sj}}$:
+		$$
+		\pfrac{Y_{sj}}{\hat{X}_{sj}} = \gamma_j
+		$$ We can now combine the found expressions to calculate the required derivative.
+		$$
+		\begin{aligned}
+		\pfrac{L}{X_{ri}} &= \sum_{s,j}\pfrac{L}{Y_{sj}}\gamma_j\left[\delta_{rs}\delta_{ij} -\frac{\delta_{rs}}{M\sqrt{\sigma_s^2 + \epsilon}}\sum_l\delta_{li} - \frac{\left(\sigma_s^2 + \epsilon\right)^{-3 / 2}}{M}\left(X_{sj} - \mu_s\right)\left(X_{si} - \mu_s\right)\delta_{rs}\right] \\ &= \pfrac{L}{Y_{ri}}\gamma_i - \sum_{l,j}\pfrac{L}{Y_{rj}}\frac{\gamma_j\delta_{li}}{M\sqrt{\sigma_r^2 + \epsilon}} - \sum_j\pfrac{L}{Y_{rj}}\frac{\gamma_j\left(\sigma_r^2 + \epsilon\right)^{-3 / 2}}{M}\left(X_{rj} - \mu_r\right)\left(X_{ri} - \mu_r\right) \\ &= \pfrac{L}{Y_{ri}}\gamma_i - \frac{1}{M\sqrt{\sigma_r^2 + \epsilon}}\sum_{l,j}\pfrac{L}{Y_{rj}}\gamma_j\delta_{li} - \frac{\left(\sigma_r^2 + \epsilon\right)^{-3 / 2}}{M}\hat{X}_{ri}\sum_j\pfrac{L}{Y_{rj}}\gamma_j\hat{X}_{rj}
+		\end{aligned}
+		$$
+	\end{enumerate}
+	\item
+	See the accompanying code.
+	\item
+	Likewise, the implementation can be found in the attached python files.
+	\item
+	Batch normalization speeds up training by normalizing neuron inputs with the batch statistics \cite{ioffe2015batch}. This is useful when the batch size is significant, because the accuracy of the mean and variance estimates increases with the batch size. This approach can not be applied when training must be done with single-sample batches, or when training an RNN. For that reason, layer normalization was introduced \cite{ba2016layer}. It has the same effect of speeding up training, and has proved very effective for RNNs. However, it does not performs as well on image classification tasks, as discussed in the lecture.
+	
+	Now we will discuss the performance of the two methods for different batch sizes. For small sizes, batch normalization will result in less accurate statistics, and therefore will not be as effective. For large batch sizes, batch normalization will yield very accurate statistics and therefore the method will be very effective in generating normally distributed activations. Like discussed before, in layer normalization statistics are computed over the feature dimension. This gives a set of statistics for each sample in the batch, and the performance of layer normalization is therefore independent of batch size. 
+\end{enumerate}
+\bibliographystyle{abbrv}
+\bibliography{references.bib}
 \end{document}

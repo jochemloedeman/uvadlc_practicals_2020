@@ -43,9 +43,6 @@ def accuracy(predictions, targets):
     Returns:
       accuracy: scalar float, the accuracy of predictions,
                 i.e. the average correct predictions over the whole batch
-    
-    TODO:
-    Implement accuracy computation.
     """
 
     ########################
@@ -100,7 +97,6 @@ def train():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     cifar10 = cifar10_utils.get_cifar10(FLAGS.data_dir, one_hot=False)
     mlp_model = MLP(3072, dnn_hidden_units, 10)
-    print(mlp_model)
     loss_module = nn.CrossEntropyLoss()
     test_images, test_labels = torch.from_numpy(cifar10['test'].images).to(device), \
                                torch.from_numpy(cifar10['test'].labels).to(device)
@@ -112,7 +108,6 @@ def train():
     mlp_model.to(device)
     optimizer = torch.optim.Adam(mlp_model.parameters(), lr=FLAGS.learning_rate)
     mlp_model.train()
-    start_time = time.time()
 
     for i in range(FLAGS.max_steps):
 
@@ -147,10 +142,6 @@ def train():
 
         mlp_model.train()
 
-    for parameter in mlp_model.named_parameters():
-        print(parameter)
-
-    print(" %s seconds " % (time.time() - start_time))
     print(accuracies)
     plot_curve(accuracies, 'Accuracy')
     plot_curve(losses, 'Loss')

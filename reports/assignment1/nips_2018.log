@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.11.5)  8 NOV 2020 15:37
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.11.5)  10 NOV 2020 16:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -673,14 +673,14 @@ File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: 
-* h-part:(L,W,R)=(54.2025pt, 505.89pt, 54.2025pt)
+* h-part:(L,W,R)=(18.0675pt, 578.15999pt, 18.0675pt)
 * v-part:(T,H,B)=(72.26999pt, 650.43pt, 72.27pt)
 * \paperwidth=614.295pt
 * \paperheight=794.96999pt
-* \textwidth=505.89pt
+* \textwidth=578.15999pt
 * \textheight=650.43pt
-* \oddsidemargin=-18.06749pt
-* \evensidemargin=-18.06749pt
+* \oddsidemargin=-54.20248pt
+* \evensidemargin=-54.20248pt
 * \topmargin=-37.0pt
 * \headheight=12.0pt
 * \headsep=25.0pt
@@ -844,8 +844,13 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
+
+
+Package caption Warning: Unused \captionsetup[subfigure] on input line 13.
+See the caption package documentation for explanation.
+
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 80.
- [1
+[1
 
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
@@ -859,8 +864,8 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 80.
  ) 
 Here is how much of TeX's memory you used:
  17421 strings out of 481239
- 315214 string characters out of 5920377
- 611801 words of memory out of 5000000
+ 315234 string characters out of 5920377
+ 611831 words of memory out of 5000000
  32356 multiletter control sequences out of 15000+600000
  588003 words of font info for 73 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -873,7 +878,7 @@ f/fonts/type1/public/lm/lmex10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi
 10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi7.pfb></usr/share/texmf/font
 s/type1/public/lm/lmmib10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb
 >
-Output written on nips_2018.pdf (1 page, 96258 bytes).
+Output written on nips_2018.pdf (1 page, 96246 bytes).
 PDF statistics:
  63 PDF objects out of 1000 (max. 8388607)
  52 compressed objects within 1 object stream

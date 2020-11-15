@@ -2,3 +2,6 @@
 \BOOKMARK [2][-]{subsection.1.1}{Evaluating the Gradients}{section.1}% 2
 \BOOKMARK [2][-]{subsection.1.2}{NumPy Implementation}{section.1}% 3
 \BOOKMARK [1][-]{section.2}{PyTorch MLP}{}% 4
+\BOOKMARK [1][-]{section.3}{Custom Module: Layer Normalization}{}% 5
+\BOOKMARK [2][-]{subsection.3.1}{Automatic differentiation}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.2}{Manual implementation of backward pass}{section.3}% 7
