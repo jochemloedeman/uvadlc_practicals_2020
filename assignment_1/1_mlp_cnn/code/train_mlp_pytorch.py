@@ -28,6 +28,7 @@ EVAL_FREQ_DEFAULT = 100
 DATA_DIR_DEFAULT = './cifar10/cifar-10-batches-py'
 
 FLAGS = None
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
 def accuracy(predictions, targets):
@@ -73,9 +74,6 @@ def plot_curve(values, label):
 def train():
     """
     Performs training and evaluation of MLP model.
-  
-    TODO:
-    Implement training and evaluation of MLP model. Evaluate your model on the whole test set each eval_freq iterations.
     """
 
     ### DO NOT CHANGE SEEDS!
@@ -94,21 +92,24 @@ def train():
     ########################
     # PUT YOUR CODE HERE  #
     #######################
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+    # load the test daa
     cifar10 = cifar10_utils.get_cifar10(FLAGS.data_dir, one_hot=False)
-    mlp_model = MLP(3072, dnn_hidden_units, 10)
-    loss_module = nn.CrossEntropyLoss()
     test_images, test_labels = torch.from_numpy(cifar10['test'].images).to(device), \
                                torch.from_numpy(cifar10['test'].labels).to(device)
 
+    # flatten the images for the MLP
     test_vectors = reshape_images(test_images)
+
+    # set up the model
+    mlp_model = MLP(3072, dnn_hidden_units, 10)
+    mlp_model.to(device)
+    loss_module = nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(mlp_model.parameters(), lr=FLAGS.learning_rate)
 
     accuracies = []
     losses = []
-    mlp_model.to(device)
-    optimizer = torch.optim.Adam(mlp_model.parameters(), lr=FLAGS.learning_rate)
     mlp_model.train()
-
     for i in range(FLAGS.max_steps):
 
         # load data
@@ -142,7 +143,6 @@ def train():
 
         mlp_model.train()
 
-    print(accuracies)
     plot_curve(accuracies, 'Accuracy')
     plot_curve(losses, 'Loss')
     ########################

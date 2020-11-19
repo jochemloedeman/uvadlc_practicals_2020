@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.11.5)  12 NOV 2020 16:21
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.11.5)  15 NOV 2020 20:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -844,7 +844,7 @@ Package epstopdf Info: Source file: <numpyAccuracy.eps>
 d-to.pdf numpyAccuracy.eps>
 (epstopdf)             \includegraphics on input line 150.
 Package epstopdf Info: Output file is already uptodate.
-<numpyAccuracy-eps-converted-to.pdf, id=64, 416.01422pt x 312.08597pt>
+<numpyAccuracy-eps-converted-to.pdf, id=68, 416.01422pt x 312.08597pt>
 File: numpyAccuracy-eps-converted-to.pdf Graphic file (type pdf)
 <use numpyAccuracy-eps-converted-to.pdf>
 Package pdftex.def Info: numpyAccuracy-eps-converted-to.pdf  used on input line
@@ -860,7 +860,7 @@ Package epstopdf Info: Source file: <numpyLoss.eps>
 .pdf numpyLoss.eps>
 (epstopdf)             \includegraphics on input line 151.
 Package epstopdf Info: Output file is already uptodate.
-<numpyLoss-eps-converted-to.pdf, id=65, 409.63039pt x 312.02571pt>
+<numpyLoss-eps-converted-to.pdf, id=69, 409.63039pt x 312.02571pt>
 File: numpyLoss-eps-converted-to.pdf Graphic file (type pdf)
 <use numpyLoss-eps-converted-to.pdf>
 Package pdftex.def Info: numpyLoss-eps-converted-to.pdf  used on input line 151
@@ -881,7 +881,7 @@ Package epstopdf Info: Source file: <torchAccuracy.eps>
 d-to.pdf torchAccuracy.eps>
 (epstopdf)             \includegraphics on input line 167.
 Package epstopdf Info: Output file is already uptodate.
-<torchAccuracy-eps-converted-to.pdf, id=123, 410.95534pt x 312.02571pt>
+<torchAccuracy-eps-converted-to.pdf, id=127, 410.95534pt x 312.02571pt>
 File: torchAccuracy-eps-converted-to.pdf Graphic file (type pdf)
 <use torchAccuracy-eps-converted-to.pdf>
 Package pdftex.def Info: torchAccuracy-eps-converted-to.pdf  used on input line
@@ -897,7 +897,7 @@ Package epstopdf Info: Source file: <torchLoss.eps>
 .pdf torchLoss.eps>
 (epstopdf)             \includegraphics on input line 168.
 Package epstopdf Info: Output file is already uptodate.
-<torchLoss-eps-converted-to.pdf, id=124, 410.95534pt x 312.02571pt>
+<torchLoss-eps-converted-to.pdf, id=128, 410.95534pt x 312.02571pt>
 File: torchLoss-eps-converted-to.pdf Graphic file (type pdf)
 <use torchLoss-eps-converted-to.pdf>
 Package pdftex.def Info: torchLoss-eps-converted-to.pdf  used on input line 168
@@ -905,22 +905,56 @@ Package pdftex.def Info: torchLoss-eps-converted-to.pdf  used on input line 168
 (pdftex.def)             Requested size: 234.87749pt x 178.3326pt.
  [4 <./torchAccuracy-eps-converted-to.pdf> <./torchLoss-eps-converted-to.pdf>] 
 [5]
-(./assignment1.bbl)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 246.
- [6]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 246.
+Package epstopdf Info: Source file: <convAccuracy.eps>
+(epstopdf)                    date: 2020-11-15 01:41:00
+(epstopdf)                    size: 16861 bytes
+(epstopdf)             Output file: <convAccuracy-eps-converted-to.pdf>
+(epstopdf)                    date: 2020-11-15 20:30:40
+(epstopdf)                    size: 10995 bytes
+(epstopdf)             Command: <repstopdf --outfile=convAccuracy-eps-converted
+-to.pdf convAccuracy.eps>
+(epstopdf)             \includegraphics on input line 250.
+Package epstopdf Info: Output file is already uptodate.
+<convAccuracy-eps-converted-to.pdf, id=195, 409.63039pt x 312.02571pt>
+File: convAccuracy-eps-converted-to.pdf Graphic file (type pdf)
+<use convAccuracy-eps-converted-to.pdf>
+Package pdftex.def Info: convAccuracy-eps-converted-to.pdf  used on input line 
+250.
+(pdftex.def)             Requested size: 234.87749pt x 178.91345pt.
+Package epstopdf Info: Source file: <convLoss.eps>
+(epstopdf)                    date: 2020-11-15 01:41:16
+(epstopdf)                    size: 14324 bytes
+(epstopdf)             Output file: <convLoss-eps-converted-to.pdf>
+(epstopdf)                    date: 2020-11-15 20:30:40
+(epstopdf)                    size: 9660 bytes
+(epstopdf)             Command: <repstopdf --outfile=convLoss-eps-converted-to.
+pdf convLoss.eps>
+(epstopdf)             \includegraphics on input line 251.
+Package epstopdf Info: Output file is already uptodate.
+<convLoss-eps-converted-to.pdf, id=196, 409.63039pt x 312.02571pt>
+File: convLoss-eps-converted-to.pdf Graphic file (type pdf)
+<use convLoss-eps-converted-to.pdf>
+Package pdftex.def Info: convLoss-eps-converted-to.pdf  used on input line 251.
+
+(pdftex.def)             Requested size: 234.87749pt x 178.91345pt.
+
+(./assignment1.bbl [6 <./convAccuracy-eps-converted-to.pdf> <./convLoss-eps-con
+verted-to.pdf>])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 258.
+ [7]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 258.
  (./assignment1.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 246.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 246.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 258.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 258.
 Package rerunfilecheck Info: File `assignment1.out' has not changed.
-(rerunfilecheck)             Checksum: 7A24B2BED724FE8C41CA2D78D717F111;490.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 246.
+(rerunfilecheck)             Checksum: EE748317AAAD15F04C44CAC46D75D679;536.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 258.
  ) 
 Here is how much of TeX's memory you used:
- 17591 strings out of 481239
- 318303 string characters out of 5920377
- 621123 words of memory out of 5000000
- 32435 multiletter control sequences out of 15000+600000
+ 17613 strings out of 481239
+ 318815 string characters out of 5920377
+ 621243 words of memory out of 5000000
+ 32448 multiletter control sequences out of 15000+600000
  594385 words of font info for 95 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  58i,11n,52p,791b,1003s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -936,10 +970,10 @@ ublic/lm/lmmib10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/sh
 are/texmf/fonts/type1/public/lm/lmr7.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/tex
 mf/fonts/type1/public/lm/lmsy7.pfb>
-Output written on assignment1.pdf (6 pages, 204153 bytes).
+Output written on assignment1.pdf (7 pages, 219839 bytes).
 PDF statistics:
- 262 PDF objects out of 1000 (max. 8388607)
- 164 compressed objects within 2 object streams
- 46 named destinations out of 1000 (max. 500000)
- 20045 words of extra memory for PDF output out of 20736 (max. 10000000)
+ 327 PDF objects out of 1000 (max. 8388607)
+ 188 compressed objects within 2 object streams
+ 53 named destinations out of 1000 (max. 500000)
+ 20063 words of extra memory for PDF output out of 20736 (max. 10000000)
 

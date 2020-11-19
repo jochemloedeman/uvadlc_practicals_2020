@@ -55,7 +55,6 @@ class MLP(object):
           x: input to the network
         Returns:
           out: outputs of the network
-
         """
 
         ########################
@@ -100,11 +99,3 @@ class MLP(object):
         for mod in self.linear_modules:
             mod.params['weight'] -= learning_rate * mod.grads['weight']
             mod.params['bias'] -= learning_rate * mod.grads['bias']
-
-
-if __name__ == '__main__':
-    mlp = MLP(3, [4], 2)
-    inputs = np.array([24, 2, 5])[np.newaxis, :]
-    output = mlp.forward(inputs)
-    mlp.backward(np.array([1, 0])[np.newaxis, :])
-    print('hi')

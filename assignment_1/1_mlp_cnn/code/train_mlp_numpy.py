@@ -92,16 +92,17 @@ def train():
     # PUT YOUR CODE HERE  #
     #######################
 
+    # set up the data
     cifar10 = cifar10_utils.get_cifar10(FLAGS.data_dir)
-    mlp_model = MLP(3072, dnn_hidden_units, 10)
-    loss_module = CrossEntropyModule()
-
     test_images, test_labels = cifar10['test'].images, cifar10['test'].labels
     test_vectors = reshape_images(test_images)
 
+    # set up the model
+    mlp_model = MLP(3072, dnn_hidden_units, 10)
+    loss_module = CrossEntropyModule()
+
     accuracies = []
     losses = []
-
     for i in range(FLAGS.max_steps):
         images, labels = cifar10['train'].next_batch(FLAGS.batch_size)
         image_vectors = reshape_images(images)
@@ -124,7 +125,6 @@ def train():
             accuracies.append(test_accuracy)
             losses.append(loss)
 
-    print(accuracies)
     plot_curve(accuracies, 'Accuracy')
     plot_curve(losses, 'Loss')
     ########################

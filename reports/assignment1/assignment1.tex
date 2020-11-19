@@ -241,6 +241,18 @@ See the accompanying code
 	
 	Now we will discuss the performance of the two methods for different batch sizes. For small sizes, batch normalization will result in less accurate statistics, and therefore will not be as effective. For large batch sizes, batch normalization will yield very accurate statistics and therefore the method will be very effective in generating normally distributed activations. Like discussed before, in layer normalization statistics are computed over the feature dimension. This gives a set of statistics for each sample in the batch, and the performance of layer normalization is therefore independent of batch size. 
 \end{enumerate}
+\section{PyTorch CNN}
+\subsubsection*{Question 4}
+\begin{enumerate}[label=(\alph*)]
+	\item The CNN was implemented according to the instructions. The corresponding loss and accuracy curves are found in \ref{fig:cnncurves}. The best accuracy was found to be $0.80$.
+\begin{figure}[H]
+	\centering
+	\subfloat[]{\includegraphics[width=.5\textwidth]{convAccuracy.eps}}
+	\subfloat[]{\includegraphics[width=.5\textwidth]{convLoss.eps}}
+	\caption{Accuracy and loss for the PyTorch implementation of the CNN}
+	\label{fig:cnncurves}
+\end{figure}
+\end{enumerate}
 \bibliographystyle{abbrv}
 \bibliography{references.bib}
 \end{document}

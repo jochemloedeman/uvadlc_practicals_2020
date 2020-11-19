@@ -72,7 +72,7 @@ class LinearModule(object):
         #######################
 
         self.grads['weight'] = dout.T @ self.input
-        self.grads['bias'] = np.ones(shape=(1, self.batch_size)) @ dout
+        self.grads['bias'] = np.sum(dout, axis=0)
         dx = dout @ self.params['weight']
 
         ########################
@@ -150,9 +150,6 @@ class CrossEntropyModule(object):
           y: labels of the input
         Returns:
           out: cross entropy loss
-    
-        TODO:
-        Implement forward pass of the module.
         """
 
         ########################
@@ -176,9 +173,6 @@ class CrossEntropyModule(object):
           y: labels of the input
         Returns:
           dx: gradient of the loss with the respect to the input x.
-    
-        TODO:
-        Implement backward pass of the module.
         """
 
         ########################
@@ -242,7 +236,6 @@ class ELUModule(object):
           dout: gradients of the previous module
         Returns:
           dx: gradients with respect to the input of the module
-
         """
 
         ########################

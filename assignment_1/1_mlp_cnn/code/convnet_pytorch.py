@@ -77,7 +77,7 @@ class ResNetLike(nn.Module):
     def __init__(self, input_channels):
         super().__init__()
         self.layers = nn.Sequential(nn.BatchNorm2d(input_channels), nn.ReLU(),
-                                     nn.Conv2d(input_channels, input_channels, kernel_size=3, padding=1))
+                                    nn.Conv2d(input_channels, input_channels, kernel_size=3, padding=1))
 
     def forward(self, x):
         out = x + self.layers(x)

@@ -86,21 +86,22 @@ def train():
     ########################
     # PUT YOUR CODE HERE  #
     #######################
+
+    # set up the data
     cifar10 = cifar10_utils.get_cifar10(FLAGS.data_dir, one_hot=False)
     test_set = cifar10["test"]
     test_batch_size = 2000
     n_test_batches = int(test_set.num_examples / test_batch_size)
 
+    # set up the model and optimizer
     conv_net = ConvNet(n_channels=3, n_classes=10)
     loss_module = nn.CrossEntropyLoss()
+    conv_net.to(device)
+    optimizer = torch.optim.Adam(conv_net.parameters(), lr=FLAGS.learning_rate)
 
     accuracies = []
     losses = []
-
-    conv_net.to(device)
-    optimizer = torch.optim.Adam(conv_net.parameters(), lr=FLAGS.learning_rate)
     conv_net.train()
-    start_time = time.time()
     for i in range(FLAGS.max_steps):
 
         # load data
@@ -129,8 +130,6 @@ def train():
 
         conv_net.train()
 
-    print(time.time() - start_time)
-    print(accuracies)
     plot_curve(accuracies, 'Accuracy')
     plot_curve(losses, 'Loss')
 

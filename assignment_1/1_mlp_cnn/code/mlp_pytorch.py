@@ -32,7 +32,6 @@ class MLP(nn.Module):
           n_classes: number of classes of the classification problem.
                      This number is required in order to specify the
                      output dimensions of the MLP
-
         """
 
         ########################
@@ -49,7 +48,6 @@ class MLP(nn.Module):
         for mod in self.layers:
             if isinstance(mod, nn.Linear):
                 nn.init.normal_(mod.weight, mean=0, std=0.0001)
-
         ########################
         # END OF YOUR CODE    #
         #######################
@@ -63,9 +61,6 @@ class MLP(nn.Module):
           x: input to the network
         Returns:
           out: outputs of the network
-        
-        TODO:
-        Implement forward pass of the network.
         """
 
         ########################
@@ -77,11 +72,3 @@ class MLP(nn.Module):
         #######################
 
         return out
-
-
-if __name__ == '__main__':
-    mlp = MLP(3, [4], 2)
-    inputs = torch.Tensor([24, 2, 5])
-    output = mlp(inputs)
-
-    print('hi')

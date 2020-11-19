@@ -5,3 +5,4 @@
 \BOOKMARK [1][-]{section.3}{Custom Module: Layer Normalization}{}% 5
 \BOOKMARK [2][-]{subsection.3.1}{Automatic differentiation}{section.3}% 6
 \BOOKMARK [2][-]{subsection.3.2}{Manual implementation of backward pass}{section.3}% 7
+\BOOKMARK [1][-]{section.4}{PyTorch CNN}{}% 8
