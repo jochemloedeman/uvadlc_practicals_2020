@@ -75,9 +75,9 @@ def train(config):
     elif config.dataset == 'bipalindrome':
         print('Load binary palindrome dataset ...')
         # Initialize the dataset and data loader
-        config.num_classes = config.input_length
+        config.num_classes = 2
         dataset = datasets.BinaryPalindromeDataset(config.input_length)
-        data_loader = DataLoader(dataset, config.batch_size, num_workers=1,
+        data_loader = DataLoader(dataset, config.batch_size, num_workers=0,
                                  drop_last=True)
 
         config.input_length = config.input_length*4+2-1
@@ -125,7 +125,6 @@ def train(config):
 
         # Only for time measurement of step through network
         t1 = time.time()
-
         # Move to GPU
         batch_inputs = batch_inputs.to(device)     # [batch_size, seq_length,1]
         batch_targets = batch_targets.to(device)   # [batch_size]
@@ -186,14 +185,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     # dataset
-    parser.add_argument('--dataset', type=str, default='randomcomb',
+    parser.add_argument('--dataset', type=str, default='bipalindrome',
                         choices=['randomcomb', 'bss', 'bipalindrome'],
                         help='Dataset to be trained on.')
     # Model params
-    parser.add_argument('--model_type', type=str, default='biLSTM',
+    parser.add_argument('--model_type', type=str, default='LSTM',
                         choices=['LSTM', 'biLSTM', 'GRU', 'peepLSTM'],
                         help='Model type: LSTM, biLSTM, GRU or peepLSTM')
-    parser.add_argument('--input_length', type=int, default=6,
+    parser.add_argument('--input_length', type=int, default=10,
                         help='Length of an input sequence')
     parser.add_argument('--input_dim', type=int, default=1,
                         help='Dimensionality of input sequence')
@@ -205,7 +204,7 @@ if __name__ == "__main__":
     # Training params
     parser.add_argument('--batch_size', type=int, default=256,
                         help='Number of examples to process in a batch')
-    parser.add_argument('--learning_rate', type=float, default=0.001,
+    parser.add_argument('--learning_rate', type=float, default=0.0001,
                         help='Learning rate')
     parser.add_argument('--train_steps', type=int, default=3000,
                         help='Number of training steps')
