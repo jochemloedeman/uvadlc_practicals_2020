@@ -1,0 +1,53 @@
+\documentclass{article}
+\usepackage[preprint]{nips_2018}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{packages}
+\newcommand{\pfrac}[2]{\frac{\partial #1}{\partial #2}}
+
+\title{Deep Learning Assignment 2}
+
+\author{%
+  Jochem Loedeman \\
+  12995282
+}
+
+\begin{document}
+\maketitle
+\section{Recurrent Neural Networks}
+\subsection{Vanilla RNNs}
+\subsubsection*{Question 1.1}
+\begin{enumerate}[label=(\alph*)]
+	\item
+	$$\pfrac{\mathcal{L}^{(T)}}{\b W_{ph}} = \pfrac{\mathcal{L}^{(T)}}{\b p^{(T)}}\pfrac{\b p^{(T)}}{\b W_{ph}}$$ In the computational graph, there is no path from outputs of recurrent hidden states to the loss at $T$. Therefore, no sum over previous states is present in the expression for the gradient.
+	\item
+	$$
+	\begin{aligned}
+	\pfrac{\mathcal{L}^{(T)}}{\b W_{hh}} &= \pfrac{\mathcal{L}^{(T)}}{\b p^{(T)}}\pfrac{\b p^{(T)}}{\b h^{(T)}}\pfrac{\b h^{(T)}}{\b W_{hh}} = \sum_{i=0}^{T}\pfrac{\mathcal{L}^{(T)}}{\b p^{(T)}}\pfrac{\b p^{(T)}}{\b h^{(T)}}\pfrac{\b h^{(T)}}{\b h^{(i)}}\pfrac{\b h^{(i)}}{\b W_{hh}} \\ &= \sum_{i=0}^{T}\pfrac{\mathcal{L}^{(T)}}{\b p^{(T)}}\pfrac{\b p^{(T)}}{\b h^{(T)}}\left(\prod_{j=i+1}^T\pfrac{\b h^{(j)}}{\b h^{(j-1)}}\right)\pfrac{\b h^{(i)}}{\b W_{hh}}
+	\end{aligned}
+	$$ In this case, there are paths from nodes in previous timesteps computed with $\b W_{hh}$ to the loss at $T$. Therefore, we should account for these dependencies through the chain rule, giving rise to sums and products within the expression for the gradient.
+	\item The first and second gradients are respectively independent and dependent on previous timesteps, as was already explained through the connectivity of the computational graph. When training this network for a large number of timesteps, we have to account for very long-term dependencies of the recurrent states through the product in the expression for the second gradient. This product of Jacobians can cause the total gradient to become very small or very large, making learning difficult.
+\end{enumerate}
+\subsubsection*{Question 1.2}
+\begin{enumerate}[label=(\alph*)]
+	\item
+	\begin{itemize}
+		\item \textit{Input modulation gate:} \\Proposes an updated cell state. This gate has a tanh activation, which is important to keep the activations of the internal state zero-centered. If for example we used the sigmoid, these states would increase over time. \\
+		\item \textit{Input gate:}\\ Regulates how much of the new value proposed by the input modulation gate is actually used in the updated cell state. Uses a sigmoid to obtain a gating value between 0 and 1.\\
+		\item \textit{Forget gate:}\\ Regulates how much of the previous cell state is retained in the updated cell state. Uses a sigmoid to obtain a gating value between 0 and 1, which corresponds to completely forgetting or strongly remembering the previous state. \\
+		\item \textit{Output gate:}\\ Regulates how much of the nonlinearized current cell state is passed as output of the cell. Uses a sigmoid to obtain a gating value between 0 and 1.\\
+	\end{itemize}
+	\item 
+	$$
+	\begin{aligned}
+	N_{\text{total}} = 4&\underbrace{\left(N_{\text{hidden}}\cdot N_{\text{input}} + N_{\text{hidden}}\cdot N_{\text{hidden}} + N_{\text{hidden}}\right)}_{\text{gate input weights, recurrent weights and biases}} \\ &+ \underbrace{N_{\text{output}}\cdot N_{\text{hidden}}}_{\text{output weights}} + \underbrace{N_{\text{output}}}_{\text{output bias}}
+	\end{aligned}
+	$$
+\end{enumerate}
+\end{document}
