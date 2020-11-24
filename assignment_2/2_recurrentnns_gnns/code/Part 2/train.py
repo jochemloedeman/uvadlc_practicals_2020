@@ -25,6 +25,7 @@ import argparse
 import numpy as np
 
 import torch
+import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 
@@ -34,21 +35,35 @@ from model import TextGenerationModel
 ###############################################################################
 
 
+def to_tensor_rep(batch):
+    tensor = torch.empty(len(batch), len(batch[0]))
+    for i in range(len(batch)):
+        tensor[i, :] = batch[i]
+    return tensor.type(torch.LongTensor)
+
+
+# def to_one_hot(batch):
+
+
+
 def train(config):
 
     # Initialize the device which to run the model on
     device = torch.device(config.device)
 
     # Initialize the dataset and data loader (note the +1)
-    dataset = TextDataset(...)  # fixme
-    data_loader = DataLoader(dataset, config.batch_size)
+    dataset = TextDataset(config.txt_file, config.seq_length)
+    data_loader = DataLoader(dataset, config.batch_size, config.seq_length,)
 
     # Initialize the model that we are going to use
-    model = TextGenerationModel(...)  # FIXME
+    vocabulary_size = dataset.vocab_size
+    model = TextGenerationModel(batch_size=config.batch_size, seq_length=config.seq_length,
+                                vocabulary_size=vocabulary_size)
+    model.to(device)
 
     # Setup the loss and optimizer
-    criterion = None  # FIXME
-    optimizer = None  # FIXME
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(model.parameters(), lr=config.learning_rate)
 
     for step, (batch_inputs, batch_targets) in enumerate(data_loader):
 
@@ -56,11 +71,27 @@ def train(config):
         t1 = time.time()
 
         #######################################################
-        # Add more code here ...
-        #######################################################
+        # Move to GPU
+        batch_inputs = to_tensor_rep(batch_inputs).to(device)
+        batch_targets = to_tensor_rep(batch_targets).to(device)
 
-        loss = np.inf   # fixme
-        accuracy = 0.0  # fixme
+        # Reset for next iteration
+        model.zero_grad()
+
+        #######################################################
+        model_output = model(batch_inputs)
+        losses = torch.zeros(config.seq_length, device=device)
+        for i in range(config.seq_length):
+            losses[i] = criterion(model_output[i], batch_targets[i])
+
+        loss = (1 / config.seq_length) * torch.sum(losses)
+
+        loss.backward()
+        optimizer.step()
+
+        predictions = torch.argmax(model_output, dim=2)
+        correct = (predictions == batch_targets).sum().item()
+        accuracy = correct / (model_output.size(0) * model_output.size(1))
 
         # Just for time measurement
         t2 = time.time()
@@ -77,8 +108,7 @@ def train(config):
                     ))
 
         if (step + 1) % config.sample_every == 0:
-            # Generate some sentences by sampling from the model
-            pass
+            
 
         if step == config.train_steps:
             # If you receive a PyTorch data-loader error,
