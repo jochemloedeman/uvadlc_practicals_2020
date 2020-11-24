@@ -15,7 +15,7 @@ def plot_curves(x, values, stddev, label, title):
     plt.ylabel(label)
     plt.legend()
     plt.title(title)
-    plt.savefig(fname='lstm.eps', format='jpg', bbox_inches='tight', dpi=300)
+    plt.savefig(fname='peep_lstm.jpg', format='jpg', bbox_inches='tight', dpi=300)
     # plt.show()
 
 
@@ -28,7 +28,7 @@ def experiment():
                         choices=['randomcomb', 'bss', 'bipalindrome'],
                         help='Dataset to be trained on.')
     # Model params
-    parser.add_argument('--model_type', type=str, default='LSTM',
+    parser.add_argument('--model_type', type=str, default='peepLSTM',
                         choices=['LSTM', 'biLSTM', 'GRU', 'peepLSTM'],
                         help='Model type: LSTM, biLSTM, GRU or peepLSTM')
     parser.add_argument('--input_length', type=int, default=10,
@@ -45,7 +45,7 @@ def experiment():
                         help='Number of examples to process in a batch')
     parser.add_argument('--learning_rate', type=float, default=0.0001,
                         help='Learning rate')
-    parser.add_argument('--train_steps', type=int, default=2000,
+    parser.add_argument('--train_steps', type=int, default=3000,
                         help='Number of training steps')
     parser.add_argument('--max_norm', type=float, default=10.0)
 

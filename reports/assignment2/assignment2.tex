@@ -34,6 +34,7 @@
 	$$ In this case, there are paths from nodes in previous timesteps computed with $\b W_{hh}$ to the loss at $T$. Therefore, we should account for these dependencies through the chain rule, giving rise to sums and products within the expression for the gradient.
 	\item The first and second gradients are respectively independent and dependent on previous timesteps, as was already explained through the connectivity of the computational graph. When training this network for a large number of timesteps, we have to account for very long-term dependencies of the recurrent states through the product in the expression for the second gradient. This product of Jacobians can cause the total gradient to become very small or very large, making learning difficult.
 \end{enumerate}
+\subsection{Long Short-Term Memory (LSTM) network}
 \subsubsection*{Question 1.2}
 \begin{enumerate}[label=(\alph*)]
 	\item
@@ -49,5 +50,27 @@
 	N_{\text{total}} = 4&\underbrace{\left(N_{\text{hidden}}\cdot N_{\text{input}} + N_{\text{hidden}}\cdot N_{\text{hidden}} + N_{\text{hidden}}\right)}_{\text{gate input weights, recurrent weights and biases}} \\ &+ \underbrace{N_{\text{output}}\cdot N_{\text{hidden}}}_{\text{output weights}} + \underbrace{N_{\text{output}}}_{\text{output bias}}
 	\end{aligned}
 	$$
+\end{enumerate}
+\subsection{LSTMs in PyTorch}
+\subsubsection*{Question 1.3}
+The required LSTM model was implemented in PyTorch, and evaluated using the supplied \texttt{train} function and the binary palindrome data. Accuracies were obtained for sequence lengths of 10 and 20, where each hyperparameter setting was evaluated for 3 different random seeds (0, 1 and 2). From these results, the mean and standard deviation for each accuracy value was obtained. This yielded two accuracy curves, one for each sequence length setting, together with the corresponding standard deviations. They are shown in Figure \ref{fig:lstm}, where the shaded areas correspond to the accuracy values that lie within 1 standard deviation on either side of the obtained accuracy value. Notice that for $T = 20$ the standard deviation increases strongly after $1000$ steps. At this point, some training runs make a large jump in accuracy, whereas others fall behind. This behaviour seems to be characteristic of the model on this data; the accuracy is stable around $0.55$ when suddenly, the model improves relatively quickly to perfect accuracy.
+\begin{figure}[h]
+	\centering
+	\subfloat[]{\includegraphics[width=.8\textwidth]{lstm.jpg}}
+	\caption{Accuracy of the LSTM on the binary palindrome dataset for $T=10$ and $T = 20$}
+	\label{fig:lstm}
+\end{figure}
+\subsubsection*{Question 1.4}
+The peepLSTM model was implemented in PyTorch, using the same hyperparameter settings as before. The results are shown in Figure \ref{fig:peeplstm}. For $T = 20$ the model converges to perfect accuracy already around $500$ steps, which is significantly faster than the original LSTM model. Furthermore, the uncertainty of the accuracy values is much smaller. Apparently, setting the gate values based on the cell states rather than the LSTM outputs is beneficial for the performance of the model on this data set.
+\begin{figure}[h]
+	\centering
+	\subfloat[]{\includegraphics[width=.8\textwidth]{peep_lstm.jpg}}
+	\caption{Accuracy of the peepLSTM on the binary palindrome dataset for $T=10$ and $T = 20$}
+	\label{fig:peeplstm}
+\end{figure}
+\section{Recurrent Nets as Generative Model}
+\subsubsection*{Question 2.1}
+\begin{enumerate}[label = (\alph*)]
+	\item 
 \end{enumerate}
 \end{document}
