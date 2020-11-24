@@ -20,8 +20,12 @@ class LSTM(nn.Module):
         # PUT YOUR CODE HERE  #
         #######################
 
-        embedding_dim = int(hidden_dim / 4)
+        # the embedding dimension is set based on TA recommendations
+        embedding_dim = int(hidden_dim / 2)
+
+        # number of embeddings is hardcoded to 3, to account for the binary values + padding
         self.embedding = nn.Embedding(num_embeddings=3, embedding_dim=embedding_dim)
+
         self.seq_length = seq_length
         self.hidden_dim = hidden_dim
         self.batch_size = batch_size
@@ -81,13 +85,18 @@ class LSTM(nn.Module):
         ########################
         # PUT YOUR CODE HERE  #
         #######################
-        h = torch.zeros(self.hidden_dim, device=self.device)
-        c = torch.zeros(self.hidden_dim, device=self.device)
+
+        # initializes initial values, and embed the sequences
+        h = torch.zeros(self.batch_size, self.hidden_dim, device=self.device)
+        c = torch.zeros(self.batch_size, self.hidden_dim, device=self.device)
         embedded_x = self.embedding(x.type(torch.cuda.LongTensor).squeeze())
 
-        # iterate over the sequence
-        for i in range(self.seq_length):
-            digit_batch = embedded_x[:, i, :]
+        # create a tensor that assigns 1 or 0 to sequence values to identify padding values
+        padding_correction = (x.type(torch.cuda.LongTensor).squeeze() + 1) // 2
+
+        # iterate over the sequences
+        for j in range(self.seq_length - 1):
+            digit_batch = embedded_x[:, j, :]
             g = torch.tanh(digit_batch @ self.w_gx + h @ self.w_gh + self.b_g)
             i = torch.sigmoid(digit_batch @ self.w_ix + h @ self.w_ih + self.b_i)
             f = torch.sigmoid(digit_batch @ self.w_fx + h @ self.w_fh + self.b_f)
@@ -95,9 +104,13 @@ class LSTM(nn.Module):
             c = g * i + c * f
             h = torch.tanh(c) * o
 
+            # set hidden states to 0 if the input of the iteration was a padding value
+            h = h * padding_correction[:, j, None]
+
         # calculate the log probabilities of the two classes
         p = h @ self.w_ph + self.b_p
         y = nn.functional.log_softmax(p, dim=0)
+
         return y
         ########################
         # END OF YOUR CODE    #

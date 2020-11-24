@@ -38,15 +38,15 @@ from peep_lstm import peepLSTM
 import numpy as np
 
 # You may want to look into tensorboardX for logging
-# from tensorboardX import SummaryWriter
+from torch.utils.tensorboard import SummaryWriter
 
 ###############################################################################
 
 
-def train(config):
-    np.random.seed(0)
-    torch.manual_seed(0)
-
+def train(config, seed=2):
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    writer = SummaryWriter()
 
     # Initialize the device which to run the model on
     device = torch.device(config.device)
@@ -58,7 +58,7 @@ def train(config):
         # Initialize the dataset and data loader
         config.num_classes = config.input_length
         dataset = datasets.RandomCombinationsDataset(config.input_length)
-        data_loader = DataLoader(dataset, config.batch_size, num_workers=1,
+        data_loader = DataLoader(dataset, config.batch_size, num_workers=0,
                                  drop_last=True)
 
     elif config.dataset == 'bss':
@@ -121,6 +121,7 @@ def train(config):
     loss_function = torch.nn.NLLLoss()
     optimizer = optim.Adam(model.parameters(), lr=config.learning_rate)
 
+    accuracies = []
     for step, (batch_inputs, batch_targets) in enumerate(data_loader):
 
         # Only for time measurement of step through network
@@ -151,6 +152,7 @@ def train(config):
         predictions = torch.argmax(log_probs, dim=1)
         correct = (predictions == batch_targets).sum().item()
         accuracy = correct / log_probs.size(0)
+        writer.add_scalar("Accuracy", accuracy, step)
 
         # print(predictions[0, ...], batch_targets[0, ...])
 
@@ -167,14 +169,16 @@ def train(config):
                     config.train_steps, config.batch_size, examples_per_second,
                     accuracy, loss
                     ))
+            accuracies.append(accuracy)
 
         # Check if training is finished
         if step == config.train_steps:
             # If you receive a PyTorch data-loader error, check this bug report
             # https://github.com/pytorch/pytorch/pull/9655
             break
-
+    writer.close()
     print('Done training.')
+    return accuracies
     ###########################################################################
     ###########################################################################
 
@@ -206,7 +210,7 @@ if __name__ == "__main__":
                         help='Number of examples to process in a batch')
     parser.add_argument('--learning_rate', type=float, default=0.0001,
                         help='Learning rate')
-    parser.add_argument('--train_steps', type=int, default=3000,
+    parser.add_argument('--train_steps', type=int, default=180,
                         help='Number of training steps')
     parser.add_argument('--max_norm', type=float, default=10.0)
 
