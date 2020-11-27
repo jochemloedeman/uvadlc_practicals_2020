@@ -71,6 +71,59 @@ The peepLSTM model was implemented in PyTorch, using the same hyperparameter set
 \section{Recurrent Nets as Generative Model}
 \subsubsection*{Question 2.1}
 \begin{enumerate}[label = (\alph*)]
-	\item 
+	\item The text generation model was implemented using the following hyperparameters:
+	\begin{itemize}
+		\item Embedding dimension: 64. This value was chosen as it was suggested to use an embedding dimension of $\frac{1}{4}$ of the cell state size.
+		\item Batch size: 64. The observed fluctuations in loss and accuracy are quite large for this value, but we still have steady convergence, and we keep the benefit of being able to escape local minima.
+	\end{itemize}
+	Running the model on Grimms fairy tale dataset for 1500 steps, the loss and accuracy curves are obtained as shown in Figure \ref{fig:texgenacc}:
+	\begin{figure}[H]
+		\centering
+		\subfloat[]{\includegraphics[width=.5\textwidth]{texgenAccuracy.eps}}
+		\subfloat[]{\includegraphics[width=.5\textwidth]{texgenLoss.eps}}
+		\caption{Accuracy and loss on the text generation task. The model is trained on the Grimms fairy tale dataset}
+		\label{fig:texgenacc}
+	\end{figure}
+	Notice that the model has not completely converged at 1500 steps. When the model is run for approximately $5000$ steps, it converges to an accuracy of approximately $0.65$. 
+	\item Next, the function \texttt{generate\_sequence} was implemented. Below, we list 5 sets of 3 sequences that were generated at $1/3$, $2/3$ and $3/3$ of the $1500$ training iterations. Each set has a different initial character from which the sequences were generated.
+	\begin{itemize}
+		\item \textbf{Initial character: t}\\
+		\textit{1/3}: the forest to the forest to the \\
+		\textit{2/3}: the stood the stread to the sto \\
+		\textit{3/3}: the world with his father that
+		\item \textbf{Initial character: a}\\
+		\textit{1/3}: and the wasted the wasted the w \\
+		\textit{2/3}: and the bear the bear the bear  \\
+		\textit{3/3}: and the sparrow what had not go
+		\item \textbf{Initial character: u}\\
+		\textit{1/3}: ut the was some to the was some \\
+		\textit{2/3}: ut the fire and said: ‘I will s \\
+		\textit{3/3}: ut the straw and said, ‘I will 
+		\item \textbf{Initial character: v}\\
+		\textit{1/3}: ve her her have her her have he \\
+		\textit{2/3}: ver the searly and the searly a \\
+		\textit{3/3}: ve the stores and said, ‘I will
+		\item \textbf{Initial character: g}\\
+		\textit{1/3}: g to the stoor and said the sto \\
+		\textit{2/3}: g to the wood with the wood wit \\
+		\textit{3/3}: g the fire and said, ‘I will go
+	\end{itemize}
+	From the sequences, it becomes clear that the model is quite vulnerable for getting stuck in loops of words that is has seen with high frequency. Especially prepositions, conjunctions and articles like "in, the, and" are repeated frequently. As the training progresses, longer and more complex dependencies that are frequent in the data become apparent. Notice that the phrase "and said, 'I will" occurs in 3 out of 5 sets of sequences. 
+	When we increase the length of generated sequences, we generally observe many repetitions of the same few phrases. This is an artifact of using the argmax to select the next character, because each character will have a unique successor. This makes it easy to get stuck in a loop containing the same characters. 
+	\item When the temperature is large, a very large part of the probability density will be assigned to the character with the largest logit, due to the exponential. In other words, the softmax becomes increasingly more like the argmax that was used previously to generate characters. When the temperature is very low, the distribution flattens, and becomes the uniform distribution in the limit of $\tau \to 0$. 
+	
+	Next, sentences were generated for $\tau \in \{0.5, 1.0, 2.0\}$ using the previous model that was trained to $0.65$ accuracy:
+	\begin{itemize}
+		\item $\boldsymbol{\tau = 0.5}$: g. Yefuitly; if thought now-Devildres-bacly warm muSif; ‘Blick Stying yon ire! Kul\_Czeby! Is nor pair!’
+		‘Heive spife
+		rrau;
+		but flight a prettil, and te\\
+		\item $\boldsymbol{\tau = 1.0}$: great men in his people they did not read
+		the ball, he got into the golden cushied. The road behindful of pure
+		streamed a white doves danced with you, \\
+		\item $\boldsymbol{\tau = 2.0}$: gave his wife sitting and have something and said, ‘I will go to the princesses on the castle
+		given her hand, and he got on and the son begged there wa
+	\end{itemize}
+	For $\tau = 0.5$, the generated words are nonsensical most of the time. Clearly, the distribution is too flat, giving too much probability mass to characters that break the correctness of words. For $\tau = 1.0$, the spelling is correct, but the generated sentences lack syntactic structure. Finally, when $\tau = 2.0$, some syntactic structure can be observed. The span over which this structure is present is small however, which can be attributed to the sequence length that is used. Notice however that the sentences contain few repetitions of phrases, which we observed frequently when using greedy sampling. For generating longer sentences, using the temperature-softmax is clearly the better sampling approach.
 \end{enumerate}
 \end{document}

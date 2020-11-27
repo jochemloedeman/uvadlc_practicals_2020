@@ -20,6 +20,7 @@ from __future__ import print_function
 import torch.nn as nn
 import torch
 
+
 class TextGenerationModel(nn.Module):
 
     def __init__(self, batch_size, seq_length, vocabulary_size,
@@ -28,15 +29,19 @@ class TextGenerationModel(nn.Module):
 
         embedding_dim = 64
         self.embedding = nn.Embedding(num_embeddings=vocabulary_size, embedding_dim=embedding_dim)
-        self.lstm = nn.LSTM(input_size=embedding_dim, hidden_size=lstm_num_hidden, num_layers=lstm_num_layers)
+        self.lstm = nn.LSTM(input_size=embedding_dim, hidden_size=lstm_num_hidden,
+                            num_layers=lstm_num_layers)
         self.linear = nn.Linear(lstm_num_hidden, vocabulary_size)
-
         self.device = device
         self.seq_length = seq_length
         self.batch_size = batch_size
+        self.nr_layers = lstm_num_layers
+        self.nr_hidden = lstm_num_hidden
+        self.h_n = None
+        self.c_n = None
 
-    def forward(self, x):
-        embedded_x = self.embedding(x.type(torch.cuda.LongTensor).squeeze())
-        out = self.lstm(embedded_x)
-        out = self.linear(out[0])
+    def forward(self, x, h_0, c_0):
+        embedded_x = self.embedding(x.type(torch.cuda.LongTensor))
+        out, (self.h_n, self.c_n) = self.lstm(embedded_x, (h_0, c_0))
+        out = self.linear(out)
         return out

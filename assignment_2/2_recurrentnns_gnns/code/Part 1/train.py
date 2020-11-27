@@ -44,8 +44,8 @@ from torch.utils.tensorboard import SummaryWriter
 
 
 def train(config, seed=2):
-    np.random.seed(seed)
-    torch.manual_seed(seed)
+    np.random.seed(0)
+    torch.manual_seed(0)
     writer = SummaryWriter()
 
     # Initialize the device which to run the model on
@@ -67,7 +67,7 @@ def train(config, seed=2):
         config.num_classes = 2
         config.input_dim = 3
         dataset = datasets.BaumSweetSequenceDataset(config.input_length)
-        data_loader = DataLoader(dataset, config.batch_size, num_workers=1,
+        data_loader = DataLoader(dataset, config.batch_size, num_workers=0,
                                  drop_last=True)
 
         config.input_length = 4 * config.input_length
@@ -189,14 +189,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     # dataset
-    parser.add_argument('--dataset', type=str, default='bipalindrome',
+    parser.add_argument('--dataset', type=str, default='bss',
                         choices=['randomcomb', 'bss', 'bipalindrome'],
                         help='Dataset to be trained on.')
     # Model params
     parser.add_argument('--model_type', type=str, default='LSTM',
                         choices=['LSTM', 'biLSTM', 'GRU', 'peepLSTM'],
                         help='Model type: LSTM, biLSTM, GRU or peepLSTM')
-    parser.add_argument('--input_length', type=int, default=10,
+    parser.add_argument('--input_length', type=int, default=4,
                         help='Length of an input sequence')
     parser.add_argument('--input_dim', type=int, default=1,
                         help='Dimensionality of input sequence')
@@ -210,7 +210,7 @@ if __name__ == "__main__":
                         help='Number of examples to process in a batch')
     parser.add_argument('--learning_rate', type=float, default=0.0001,
                         help='Learning rate')
-    parser.add_argument('--train_steps', type=int, default=180,
+    parser.add_argument('--train_steps', type=int, default=3000,
                         help='Number of training steps')
     parser.add_argument('--max_norm', type=float, default=10.0)
 

@@ -11,6 +11,17 @@ import torch.nn as nn
 import torch
 
 
+def init_weights(dim_1, dim_2):
+    weights = torch.empty(dim_1, dim_2)
+    nn.init.kaiming_normal_(weights, nonlinearity='linear')
+    return weights
+
+
+def init_bias(dim):
+    bias = torch.zeros(dim)
+    return bias
+
+
 class LSTM(nn.Module):
 
     def __init__(self, seq_length, input_dim, hidden_dim, num_classes,
@@ -21,7 +32,7 @@ class LSTM(nn.Module):
         #######################
 
         # the embedding dimension is set based on TA recommendations
-        embedding_dim = int(hidden_dim / 2)
+        embedding_dim = int(hidden_dim / 4)
 
         # number of embeddings is hardcoded to 3, to account for the binary values + padding
         self.embedding = nn.Embedding(num_embeddings=3, embedding_dim=embedding_dim)
@@ -32,51 +43,28 @@ class LSTM(nn.Module):
         self.device = device
 
         # input modulation gate
-        w_gx = torch.empty(embedding_dim, hidden_dim)
-        nn.init.kaiming_normal_(w_gx, nonlinearity='linear')
-        self.w_gx = nn.Parameter(w_gx)
-        w_gh = torch.empty(hidden_dim, hidden_dim)
-        nn.init.kaiming_normal_(w_gh, nonlinearity='linear')
-        self.w_gh = nn.Parameter(w_gh)
-        b_g = torch.zeros(hidden_dim)
-        self.b_g = nn.Parameter(b_g)
+        self.w_gx = nn.Parameter(init_weights(embedding_dim, hidden_dim))
+        self.w_gh = nn.Parameter(init_weights(hidden_dim, hidden_dim))
+        self.b_g = nn.Parameter(init_bias(hidden_dim))
 
         # input gate
-        w_ix = torch.empty(embedding_dim, hidden_dim)
-        nn.init.kaiming_normal_(w_ix, nonlinearity='linear')
-        self.w_ix = nn.Parameter(w_ix)
-        w_ih = torch.empty(hidden_dim, hidden_dim)
-        nn.init.kaiming_normal_(w_ih, nonlinearity='linear')
-        self.w_ih = nn.Parameter(w_ih)
-        b_i = torch.zeros(hidden_dim)
-        self.b_i = nn.Parameter(b_i)
+        self.w_ix = nn.Parameter(init_weights(embedding_dim, hidden_dim))
+        self.w_ih = nn.Parameter(init_weights(hidden_dim, hidden_dim))
+        self.b_i = nn.Parameter(init_bias(hidden_dim))
 
         # forget gate
-        w_fx = torch.empty(embedding_dim, hidden_dim)
-        nn.init.kaiming_normal_(w_fx, nonlinearity='linear')
-        self.w_fx = nn.Parameter(w_fx)
-        w_fh = torch.empty(hidden_dim, hidden_dim)
-        nn.init.kaiming_normal_(w_fh, nonlinearity='linear')
-        self.w_fh = nn.Parameter(w_fh)
-        b_f = torch.zeros(hidden_dim)
-        self.b_f = nn.Parameter(b_f)
+        self.w_fx = nn.Parameter(init_weights(embedding_dim, hidden_dim))
+        self.w_fh = nn.Parameter(init_weights(hidden_dim, hidden_dim))
+        self.b_f = nn.Parameter(init_bias(hidden_dim))
 
         # output gate
-        w_ox = torch.empty(embedding_dim, hidden_dim)
-        nn.init.kaiming_normal_(w_ox, nonlinearity='linear')
-        self.w_ox = nn.Parameter(w_ox)
-        w_oh = torch.empty(hidden_dim, hidden_dim)
-        nn.init.kaiming_normal_(w_oh, nonlinearity='linear')
-        self.w_oh = nn.Parameter(w_oh)
-        b_o = torch.zeros(hidden_dim)
-        self.b_o = nn.Parameter(b_o)
+        self.w_ox = nn.Parameter(init_weights(embedding_dim, hidden_dim))
+        self.w_oh = nn.Parameter(init_weights(hidden_dim, hidden_dim))
+        self.b_o = nn.Parameter(init_bias(hidden_dim))
 
         # output layer
-        w_ph = torch.empty(hidden_dim, num_classes)
-        nn.init.kaiming_normal_(w_ph, nonlinearity='linear')
-        self.w_ph = nn.Parameter(w_ph)
-        b_p = torch.zeros(num_classes)
-        self.b_p = nn.Parameter(b_p)
+        self.w_ph = nn.Parameter(init_weights(hidden_dim, num_classes))
+        self.b_p = nn.Parameter(init_bias(num_classes))
         ########################
         # END OF YOUR CODE    #
         #######################
@@ -95,7 +83,7 @@ class LSTM(nn.Module):
         padding_correction = (x.type(torch.cuda.LongTensor).squeeze() + 1) // 2
 
         # iterate over the sequences
-        for j in range(self.seq_length - 1):
+        for j in range(self.seq_length):
             digit_batch = embedded_x[:, j, :]
             g = torch.tanh(digit_batch @ self.w_gx + h @ self.w_gh + self.b_g)
             i = torch.sigmoid(digit_batch @ self.w_ix + h @ self.w_ih + self.b_i)
@@ -104,8 +92,8 @@ class LSTM(nn.Module):
             c = g * i + c * f
             h = torch.tanh(c) * o
 
-            # set hidden states to 0 if the input of the iteration was a padding value
-            h = h * padding_correction[:, j, None]
+            # set cell states to 0 if the input of the iteration was a padding value
+            c = c * padding_correction[:, j, None]
 
         # calculate the log probabilities of the two classes
         p = h @ self.w_ph + self.b_p

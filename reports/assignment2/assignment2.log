@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.11.5)  24 NOV 2020 18:18
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.11.5)  27 NOV 2020 21:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -878,28 +878,74 @@ File: peep_lstm.jpg Graphic file (type jpg)
 <use peep_lstm.jpg>
 Package pdftex.def Info: peep_lstm.jpg  used on input line 67.
 (pdftex.def)             Requested size: 346.89731pt x 277.40074pt.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 76.
- [3 <./peep_lstm.jpg>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 76.
+Package epstopdf Info: Source file: <texgenAccuracy.eps>
+(epstopdf)                    date: 2020-11-26 17:06:50
+(epstopdf)                    size: 23863 bytes
+(epstopdf)             Output file: <texgenAccuracy-eps-converted-to.pdf>
+(epstopdf)                    date: 2020-11-26 17:07:57
+(epstopdf)                    size: 13689 bytes
+(epstopdf)             Command: <repstopdf --outfile=texgenAccuracy-eps-convert
+ed-to.pdf texgenAccuracy.eps>
+(epstopdf)             \includegraphics on input line 82.
+Package epstopdf Info: Output file is already uptodate.
+<texgenAccuracy-eps-converted-to.pdf, id=64, 409.63039pt x 327.20244pt>
+File: texgenAccuracy-eps-converted-to.pdf Graphic file (type pdf)
+<use texgenAccuracy-eps-converted-to.pdf>
+Package pdftex.def Info: texgenAccuracy-eps-converted-to.pdf  used on input lin
+e 82.
+(pdftex.def)             Requested size: 216.81pt x 173.1818pt.
+Package epstopdf Info: Source file: <texgenLoss.eps>
+(epstopdf)                    date: 2020-11-26 17:06:50
+(epstopdf)                    size: 24094 bytes
+(epstopdf)             Output file: <texgenLoss-eps-converted-to.pdf>
+(epstopdf)                    date: 2020-11-26 17:07:58
+(epstopdf)                    size: 13404 bytes
+(epstopdf)             Command: <repstopdf --outfile=texgenLoss-eps-converted-t
+o.pdf texgenLoss.eps>
+(epstopdf)             \includegraphics on input line 83.
+Package epstopdf Info: Output file is already uptodate.
+<texgenLoss-eps-converted-to.pdf, id=65, 416.01422pt x 327.20244pt>
+File: texgenLoss-eps-converted-to.pdf Graphic file (type pdf)
+<use texgenLoss-eps-converted-to.pdf>
+Package pdftex.def Info: texgenLoss-eps-converted-to.pdf  used on input line 83
+.
+(pdftex.def)             Requested size: 216.81pt x 170.52568pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [3 <./peep_lstm.jpg>] [4 <./texgenAccuracy-eps-converted-to.pdf> <./texgenLoss
+-eps-converted-to.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 117--121
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 121--124
+
+ []
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 129.
+[5]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 129.
  (./assignment2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 76.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 76.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 129.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 129.
 Package rerunfilecheck Info: File `assignment2.out' has not changed.
 (rerunfilecheck)             Checksum: 199074103B8C05B8E7E08F003F04429A;343.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 76.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 129.
  ) 
 Here is how much of TeX's memory you used:
- 17582 strings out of 481239
- 317779 string characters out of 5920377
- 616112 words of memory out of 5000000
- 32450 multiletter control sequences out of 15000+600000
- 600511 words of font info for 96 fonts, out of 8000000 for 9000
+ 17627 strings out of 481239
+ 318534 string characters out of 5920377
+ 616272 words of memory out of 5000000
+ 32463 multiletter control sequences out of 15000+600000
+ 601424 words of font info for 107 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  58i,18n,52p,1149b,972s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dv
-ips/lm/lm-ts1.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/shar
-e/texmf/fonts/enc/dvips/lm/lm-mathex.enc}{/usr/share/texmf/fonts/enc/dvips/lm/l
-m-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}</usr/share/texmf/f
+{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dv
+ips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}{/usr/share/te
+xmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ma
+thex.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}</usr/share/texmf/f
 onts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmbx12.
 pfb></usr/share/texmf/fonts/type1/public/lm/lmex10.pfb></usr/share/texmf/fonts/
 type1/public/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi7.pfb></
@@ -908,10 +954,10 @@ usr/share/texmf/fonts/type1/public/lm/lmmib10.pfb></usr/share/texmf/fonts/type1
 re/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/
 lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy7.pfb></usr/share/tex
 mf/fonts/type1/public/lm/lmtt10.pfb>
-Output written on assignment2.pdf (3 pages, 539870 bytes).
+Output written on assignment2.pdf (5 pages, 573995 bytes).
 PDF statistics:
- 128 PDF objects out of 1000 (max. 8388607)
- 107 compressed objects within 2 object streams
- 25 named destinations out of 1000 (max. 500000)
- 21555 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 204 PDF objects out of 1000 (max. 8388607)
+ 130 compressed objects within 2 object streams
+ 32 named destinations out of 1000 (max. 500000)
+ 21565 words of extra memory for PDF output out of 24883 (max. 10000000)
 
