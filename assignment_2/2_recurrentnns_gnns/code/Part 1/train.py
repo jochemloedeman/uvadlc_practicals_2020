@@ -189,14 +189,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     # dataset
-    parser.add_argument('--dataset', type=str, default='bss',
+    parser.add_argument('--dataset', type=str, default='bipalindrome',
                         choices=['randomcomb', 'bss', 'bipalindrome'],
                         help='Dataset to be trained on.')
     # Model params
     parser.add_argument('--model_type', type=str, default='LSTM',
                         choices=['LSTM', 'biLSTM', 'GRU', 'peepLSTM'],
                         help='Model type: LSTM, biLSTM, GRU or peepLSTM')
-    parser.add_argument('--input_length', type=int, default=4,
+    parser.add_argument('--input_length', type=int, default=20,
                         help='Length of an input sequence')
     parser.add_argument('--input_dim', type=int, default=1,
                         help='Dimensionality of input sequence')

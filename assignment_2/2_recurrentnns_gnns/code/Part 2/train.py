@@ -82,6 +82,8 @@ def generate_sequence(model, initial_digit, dataset, length=150, temperature=2):
 
 
 def train(config):
+    writer = torch.utils.tensorboard.SummaryWriter()
+
     # Initialize the device which to run the model on
     device = torch.device(config.device)
 
@@ -122,6 +124,7 @@ def train(config):
                              h_0=torch.zeros(config.lstm_num_layers, batch_inputs.shape[1],
                                              config.lstm_num_hidden, device=device))
 
+        # for each timestep, the crossentropy loss is computed and subsequently averaged
         batch_losses = torch.zeros(config.seq_length, device=device)
         for i in range(config.seq_length):
             batch_losses[i] = criterion(model_output[i], batch_targets[i])
@@ -155,6 +158,8 @@ def train(config):
             # save loss and accuracy
             accuracies.append(accuracy)
             losses.append(loss)
+            writer.add_scalar("loss", loss)
+            writer.add_scalar("accuracy", accuracy)
 
         if (step + 1) % config.sample_every == 0:
             model.eval()

@@ -126,4 +126,39 @@ The peepLSTM model was implemented in PyTorch, using the same hyperparameter set
 	\end{itemize}
 	For $\tau = 0.5$, the generated words are nonsensical most of the time. Clearly, the distribution is too flat, giving too much probability mass to characters that break the correctness of words. For $\tau = 1.0$, the spelling is correct, but the generated sentences lack syntactic structure. Finally, when $\tau = 2.0$, some syntactic structure can be observed. The span over which this structure is present is small however, which can be attributed to the sequence length that is used. Notice however that the sentences contain few repetitions of phrases, which we observed frequently when using greedy sampling. For generating longer sentences, using the temperature-softmax is clearly the better sampling approach.
 \end{enumerate}
+\section{Graph Neural Networks}
+\subsection{GCN Forward Layer}
+\subsubsection*{Question 3.1}
+\begin{enumerate}[label=(\alph*)]
+	\item The structural information in the graph data is exploited by propagating data only between graph nodes that are connected by an edge. This operation is accomplished by multiplication with the self-connected adjacency matrix, as it assigns to each node the sum of the messages of its graph neighbours (including itself). Note that by messages, I mean the feature vectors multiplied with the weight matrix. For this reason, the process can be seen as message passing. 
+	\item The self-connected adjacency matrix becomes intractably large and therefore memory-inefficient when the graph consists of many nodes. This problem can be overcome by using a more efficient data structure for storing the graph structure, such as a sparse matrix or edge list.
+\end{enumerate}
+\subsubsection*{Question 3.2}
+\begin{enumerate}[label=(\alph*)]
+	\item Let each node's index in the matrix correspond to its label's position in the alphabet. Then, $$\tilde{A} = \begin{bmatrix}
+	1 & 1 & 0 & 0 & 1 & 1 \\
+	1 & 1 & 0 & 1 & 0 & 0 \\
+	0 & 0 & 1 & 1 & 0 & 0 \\
+	0 & 1 & 1 & 1 & 0 & 1 \\
+	1 & 0 & 0 & 0 & 1 & 0 \\
+	1 & 0 & 0 & 1 & 0 & 1
+	\end{bmatrix}$$
+	\item It will take 4 updates, since the shortest path from C to E has 4 edges. Note that the shortest path is not unique. 
+\end{enumerate}
+\subsection{Graph Attention Networks}
+\subsubsection*{Question 3.3}
+In order to perform attention, we have to replaces the average that is taken over the incoming messages with a weighted average, where the weights are determined by comparison of input queries and input keys. This would modify the forward function as follows: 
+$$
+h_i^{(l + 1)} = \sigma\left(\sum_{j \in \mathcal{N}(i)}\alpha_{ij}W^{(l)}h_j^{(l)}\right)
+$$ where $\alpha_{ij}$ is the attention weight corresponding to node $j$, when attending over neighbours of node $i$. Notice that in general, this is not a symmetric quantity, i.e., $\alpha_{ij} \neq \alpha_{ji}$
+\subsection{Applications of GNNs}
+\subsubsection*{Question 3.4}
+\begin{itemize}
+	\item \textbf{Text classification: }Graph convolutional networks can be used to classify text documents, by learning a graph that has words and documents as nodes, and is built from word occurence and co-occurence. According to the authors the model has state-of-the-art performance. (\url{https://ojs.aaai.org//index.php/AAAI/article/view/4725})
+	\item \textbf{Few-shot image classification}: Graph convolutional networks can be used to increase the performance of image classification problems that have classes for which a very small number of examples is available. This problem can be addressed by using meta-learning, a framework that uses collections of examples and corresponding label similarity measures instead of example-label pairs. 
+	By learning graph representations of images in the collections and corresponding similarity measures, state-of-the-art performance is attained, with added benefits with respect to other meta-learning approaches. (\url{https://arxiv.org/pdf/1711.04043.pdf})
+\end{itemize}
+\subsection{Comparing and Combining GNNs and RNNs}
+\subsubsection*{Question 3.5}
+One would most likely choose RNNs when the data has an intrinsic sequential structure, i.e., when the data could be represented as an directed acyclic graph. Usually, this is data that has a clear linear structure, often together with a temporal component (time series data, text). A GNN would be chosen when the data has more complex dependencies than the situation described above. These dependencies can take on many forms, such as spatial (molecules, materials, images), semantic (knowledge graphs), social (social networks) and others.
 \end{document}
