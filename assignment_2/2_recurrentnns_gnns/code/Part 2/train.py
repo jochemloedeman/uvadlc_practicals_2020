@@ -29,10 +29,10 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
-from dataset import TextDataset
-from model import TextGenerationModel
 from torch.utils.tensorboard import SummaryWriter
 
+from dataset import TextDataset
+from model import TextGenerationModel
 
 ###############################################################################
 def plot_curve(x, values, label, title):
@@ -209,7 +209,8 @@ if __name__ == "__main__":
     parser.add_argument('--dropout_keep_prob', type=float, default=1.0,
                         help='Dropout keep probability')
 
-    parser.add_argument('--train_steps', type=int, default=int(10000),
+
+    parser.add_argument('--train_steps', type=int, default=int(1e6),
                         help='Number of training steps')
     parser.add_argument('--max_norm', type=float, default=5.0, help='--')
 
