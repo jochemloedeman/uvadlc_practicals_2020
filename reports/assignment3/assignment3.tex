@@ -1,0 +1,74 @@
+\documentclass{article}
+\usepackage[preprint]{nips_2018}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{packages}
+\newcommand{\pfrac}[2]{\frac{\partial #1}{\partial #2}}
+
+\title{Deep Learning Assignment 3}
+
+\author{%
+  Jochem Loedeman \\
+  12995282
+}
+
+\begin{document}
+\maketitle
+\section{Variational Auto Encoders}
+\subsection{Latent Variable Models}
+\subsection{Decoder: The Generative Part of the VAE}
+\subsubsection*{Question 1.1}
+To able to sample from the given model we could follow the procedure of forward sampling. In this approach, we sample from the distributions of the random variables in the order that is implied by the corresponding graphical model. For the VAE, the graphical model consists of only two nodes $Z$ and $X$, connected by a directed edge from $Z$ to $X$. Therefore, we first sample from the distribution for $Z$ which, for our current model, is a unit normal distribution. This gives us a vector $\b z$, which we use as input to the neural network $f_\theta$ to calculate the $M$ Bernoulli parameters $f_\theta(\b z)_m$, $m = \{1,\dots, M\}$. We can now obtain a sample image by sampling a pixel from each distribution $\text{Bern}(x, f_\theta(\b z)_m)$, with $m = \{1,\dots, M\}$ and where $x$ is a single scalar value.
+\subsubsection*{Question 1.2}
+Approximating $\log p(\b x_n)$ using Monte-Carlo Integration is inefficient, because one would need a very large number of latent samples $\b z_n^{(l)}$ to get an acceptable approximation. The reason for this is that for most $\b z_n$, the likelihood $p(\b x_n | \b z_n)$ is a very small number. This is illustrated in Figure 2 in the assignment sheet, which suggests that the posterior $p(\b z_n | \b x_n)$ decreases rather steeply with increasing distance from the MAP solution for $\b z_n$ (Note that $p(\b x_n | \b z_n)$ and $p(\b z_n | \b x_n)$ are proportional to each other through Bayes' rule). This effect increases with the latent dimensionality, since the average distance between randomly sampled points in latent space will strongly increase, causing the likelihoods $p(\b x_n | \b z_n)$ to be extremely small even more often.
+\subsubsection*{Question 1.3}
+We obtain the smallest possible KL divergence by taking two identical Gaussians:
+$$
+(\mu_q, \mu_p, \sigma^2_q, \sigma^2_p) = (0, 0, 1, 1)
+$$ For this pair of $p, q$, we have $\text{D}_{\text{KL}} = 0$. In order to obtain a large KL divergence, we should choose Gaussians that have little overlapping probability mass. Therefore, let 
+$$
+(\mu_q, \mu_p, \sigma^2_q, \sigma^2_p) = (0, 10, 1, 1)
+$$ The quadratic term in the difference between the Guassian means will make sure that the KL divergence is large.
+\newpage
+\subsubsection*{Question 1.4}
+From Equation 14 in the assignment sheet we can immediately conclude that the RHS is a lower bound on $\log p(\b x_n)$, because we subtract an always non-negative quantity from it (the KL divergence). Therefore, $\log p(\b x_n)$ is always larger than or equal to the RHS, which implies that the RHS is a lower bound for $\log p(\b x_n)$.
+We optimize the lower bound instead of $\log p(\b x_n)$ itself, because the latter is very costly to compute (as discussed before). The ELBO however, is much easier to compute and therefore easier to optimize. By choosing a suitable variational distribution, we can ensure that the gap between them is sufficiently small.
+\subsubsection*{Question 1.5}
+The lower bound can either be pushed up by optimizing it with respect to the model parameters or with respect to the variational distribution $q_{\phi}$. In the first case, the KL divergence term on the LHS decreases to maintain the equality. For the second case, the log-likelihood term on the LHS increases. In other words, pushing up the lower bound can either increase the log-likelihood, or decrease the KL divergence term.
+\subsubsection*{Question 1.6}
+Reconstruction loss is an appropriate name for the first term, because the distribution $p_\theta(\b x | Z)$ can be used to create a "reconstruction" for an input $\b x_n$ by sampling from it. We want reconstructions to be similar to the data points $\b x_n$, which is why we want $p_\theta(\b x_n | Z)$ to be as large as possible. This knowledge is then formulated as the loss $\mathcal{L}^{\text{recon}}_n$. The second term is appropriately called a regularization term, since it penalizes dissimilarity of the variational distribution $q_{\phi}$ with respect to the prior $p_\theta(Z)$. It ensures that $q_{\phi}$ does not become too complex. 
+\subsubsection*{Question 1.7}
+We start with $\mathcal{L}^{\text{recon}}_n$:
+$$
+\begin{aligned}
+\log p_\theta(\b x_n | Z) &= \log \prod_{m=1}^{M}\text{Bern}\left(\b x_n^{(m)} | f_\theta(Z)_m\right) \\ &= \sum_{m=1}^{M}\log\left(f_\theta(Z)_m^{\b x_n^{(m)}}(1 - f_\theta(Z)_m)^{1 - \b x_n^{(m)}}\right) \\ &= \sum_{m=1}^M \b x_n^{(m)}\log(f_\theta(Z)_m) + (1 - \b x_n^{(m)})\log(1 - f_\theta(Z)_m)
+\end{aligned}
+$$
+Now, we will approximate the expectation of the above quantity using a single sample $\b z^*_n$ from $q_\phi(Z | \b x_n)$. Then, 
+$$
+\mathcal{L}^{\text{recon}}_n \approx - \sum_{m=1}^M \b x_n^{(m)}\log(f_\theta(\b z^*_n)_m) + (1 - \b x_n^{(m)})\log(1 - f_\theta(\b z^*_n)_m)
+$$
+Now, we work out the explicit form of $\mathcal{L}^{\text{reg}}_n$. We will use the fact that for two normal distributions \cite{doersch2016tutorial}, 
+$$
+D_{\text{KL}}(\mathcal{N}_0 || \mathcal{N}_1) = \frac{1}{2}\left(\text{trace}(\b\Sigma_1^{-1}\b\Sigma_0) + (\b\mu_1 - \b\mu_0)^T\b\Sigma_1^{-1}(\b\mu_1 - \b\mu_0) - D + \log\left(\frac{\det\b\Sigma_1}{\det\b\Sigma_0}\right)\right).
+$$ For the model at hand, we have $\mathcal{N}_0 = q_\phi(Z | \b x_n) = \mathcal{N}\left(\b \mu_\phi(\b x_n), \text{diag}(\b\Sigma_\phi(\b x_n))\right)$ and $\mathcal{N}_1 = \mathcal{N}(0, \b I)$, and therefore
+$$
+\begin{aligned}
+\mathcal{L}^{\text{reg}}_n = \frac{1}{2}\left(\sum_{i = 1}^D\b\Sigma_\phi(\b x_n)_i + \b \mu_\phi(\b x_n)^T \b \mu_\phi(\b x_n) - D - \log(\det \b\Sigma_\phi(\b x_n))\right)
+\end{aligned}
+$$ where we wrote the trace explicitly as the sum over the diagonal elements. The final objective can now be written as
+$$
+\begin{aligned}
+\mathcal{L} &= \sum_{n=1}^{N} \mathcal{L}^{\text{recon}}_n + \mathcal{L}^{\text{reg}}_n \\ &\approx \sum_{n=1}^N \Bigg[ - \sum_{m=1}^M \b x_n^{(m)}\log(f_\theta(\b z^*_n)_m) + (1 - \b x_n^{(m)})\log(1 - f_\theta(\b z^*_n)_m) \\ &+ \frac{1}{2}\left(\sum_{i = 1}^D\b\Sigma_\phi(\b x_n)_i + \b \mu_\phi(\b x_n)^T \b \mu_\phi(\b x_n) - D - \log(\det \b\Sigma_\phi(\b x_n))\right)\Bigg]
+\end{aligned}
+$$
+\subsubsection*{Question 1.8}
+\bibliographystyle{abbrv}
+\bibliography{references.bib}
+\end{document}

@@ -217,7 +217,8 @@ if __name__ == '__main__':
     parser.add_argument('--z_dim', default=20, type=int,
                         help='Dimensionality of latent space')
     parser.add_argument('--hidden_dims', default=[512], type=int, nargs='+',
-                        help='Hidden dimensionalities to use inside the network. To specify multiple, use " " to separate them. Example: "512 256"')
+                        help='Hidden dimensionalities to use inside the network. To specify multiple, use " " to '
+                             'separate them. Example: "512 256"')
     parser.add_argument('--num_filters', default=32, type=int,
                         help='Number of channels/filters to use in the CNN encoder/decoder.')
 
@@ -234,7 +235,8 @@ if __name__ == '__main__':
                         help='Seed to use for reproducing results')
     parser.add_argument('--num_workers', default=4, type=int,
                         help='Number of workers to use in the data loaders. To have a truly deterministic run, this has to be 0. ' + \
-                             'For your assignment report, you can use multiple workers (e.g. 4) and do not have to set it to 0.')
+                             'For your assignment report, you can use multiple workers (e.g. 4) and do not have to '
+                             'set it to 0.')
     parser.add_argument('--log_dir', default='VAE_logs', type=str,
                         help='Directory where the PyTorch Lightning logs should be created.')
     parser.add_argument('--progress_bar', action='store_true',
