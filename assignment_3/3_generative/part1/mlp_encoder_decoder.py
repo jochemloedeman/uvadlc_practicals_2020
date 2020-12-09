@@ -32,11 +32,13 @@ class MLPEncoder(nn.Module):
             z_dim - Dimensionality of latent vector.
         """
         super().__init__()
-
-        # For an intial architecture, you can use a sequence of linear layers and ReLU activations.
-        # Feel free to experiment with the architecture yourself, but the one specified here is 
-        # sufficient for the assignment.
-        raise NotImplementedError
+        self.z_dim = z_dim
+        sizes = [input_dim] + hidden_dims
+        layers = []
+        for i in range(1, len(sizes)):
+            layers.extend([nn.Linear(sizes[i - 1], sizes[i]), nn.ReLU()])
+        layers.append(nn.Linear(sizes[-1], 2 * z_dim))
+        self.layers = nn.Sequential(*layers)
 
     def forward(self, x):
         """
@@ -48,10 +50,10 @@ class MLPEncoder(nn.Module):
                       of the latent distributions.
         """
 
-        # Remark: Make sure to understand why we are predicting the log_std and not std
-        mean = None
-        log_std = None
-        raise NotImplementedError
+        x_vector = torch.reshape(x, (x.shape[0], -1))
+        combined_mean_std = self.layers(x_vector)
+        mean, log_std = torch.chunk(combined_mean_std, chunks=2, dim=1)
+
         return mean, log_std
 
 
@@ -69,11 +71,13 @@ class MLPDecoder(nn.Module):
         """
         super().__init__()
         self.output_shape = output_shape
-
-        # For an intial architecture, you can use a sequence of linear layers and ReLU activations.
-        # Feel free to experiment with the architecture yourself, but the one specified here is 
-        # sufficient for the assignment.
-        raise NotImplementedError
+        output_dim = output_shape[0] * output_shape[1] * output_shape[2]
+        sizes = [z_dim] + hidden_dims
+        layers = []
+        for i in range(1, len(sizes)):
+            layers.extend([nn.Linear(sizes[i - 1], sizes[i]), nn.ReLU()])
+        layers.append(nn.Linear(sizes[-1], output_dim))
+        self.layers = nn.Sequential(*layers)
 
     def forward(self, z):
         """
@@ -85,8 +89,8 @@ class MLPDecoder(nn.Module):
                 Shape: [B,output_shape[0],output_shape[1],output_shape[2]]
         """
 
-        x = None
-        raise NotImplementedError
+        x = self.layers(z)
+        x = torch.reshape(x, (-1, self.output_shape[0], self.output_shape[1], self.output_shape[2]))
         return x
 
     @property

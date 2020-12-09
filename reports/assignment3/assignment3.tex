@@ -60,15 +60,21 @@ D_{\text{KL}}(\mathcal{N}_0 || \mathcal{N}_1) = \frac{1}{2}\left(\text{trace}(\b
 $$ For the model at hand, we have $\mathcal{N}_0 = q_\phi(Z | \b x_n) = \mathcal{N}\left(\b \mu_\phi(\b x_n), \text{diag}(\b\Sigma_\phi(\b x_n))\right)$ and $\mathcal{N}_1 = \mathcal{N}(0, \b I)$, and therefore
 $$
 \begin{aligned}
-\mathcal{L}^{\text{reg}}_n = \frac{1}{2}\left(\sum_{i = 1}^D\b\Sigma_\phi(\b x_n)_i + \b \mu_\phi(\b x_n)^T \b \mu_\phi(\b x_n) - D - \log(\det \b\Sigma_\phi(\b x_n))\right)
+\mathcal{L}^{\text{reg}}_n = \frac{1}{2}\left(\sum_{i = 1}^D\b\Sigma_\phi(\b x_n)_i + \b \mu_\phi(\b x_n)^T \b \mu_\phi(\b x_n) - D - \log(\prod_{i=1}^{D}\b\Sigma_\phi(\b x_n)_i)\right)
 \end{aligned}
 $$ where we wrote the trace explicitly as the sum over the diagonal elements. The final objective can now be written as
 $$
 \begin{aligned}
-\mathcal{L} &= \sum_{n=1}^{N} \mathcal{L}^{\text{recon}}_n + \mathcal{L}^{\text{reg}}_n \\ &\approx \sum_{n=1}^N \Bigg[ - \sum_{m=1}^M \b x_n^{(m)}\log(f_\theta(\b z^*_n)_m) + (1 - \b x_n^{(m)})\log(1 - f_\theta(\b z^*_n)_m) \\ &+ \frac{1}{2}\left(\sum_{i = 1}^D\b\Sigma_\phi(\b x_n)_i + \b \mu_\phi(\b x_n)^T \b \mu_\phi(\b x_n) - D - \log(\det \b\Sigma_\phi(\b x_n))\right)\Bigg]
+\mathcal{L} &= \sum_{n=1}^{N} \mathcal{L}^{\text{recon}}_n + \mathcal{L}^{\text{reg}}_n \\ &\approx \sum_{n=1}^N \Bigg[ - \sum_{m=1}^M \b x_n^{(m)}\log(f_\theta(\b z^*_n)_m) + (1 - \b x_n^{(m)})\log(1 - f_\theta(\b z^*_n)_m) \\ &+ \frac{1}{2}\left(\sum_{i = 1}^D\b\Sigma_\phi(\b x_n)_i + \b \mu_\phi(\b x_n)^T \b \mu_\phi(\b x_n) - D - \log(\prod_{i=1}^{D}\b\Sigma_\phi(\b x_n)_i)\right)\Bigg]
 \end{aligned}
 $$
 \subsubsection*{Question 1.8}
+Computing $\mathcal{L}$ involves sampling from $q_{\phi}(\b z_n | \b x_n) = \mathcal{N}(\mu_\phi(\b x_n), \text{diag}(\b\Sigma_\phi(\b x_n))$. Since this distribution depends on the parameters $\phi$, we must backpropagate through this sampling procedure to be able to calculate the gradient $\nabla_{\phi}\mathcal{L}$. Since sampling is inherently stochastic and therefore non-differentiable, this is not possible. We can solve this problem by decoupling the sampling procedure from the computation step that includes the parameters $\phi$. This is done by sampling from an external unit normal distribution $\epsilon$, and transforming this variable with $\b \mu_\phi(\b x_n)$ and $\text{diag}(\b\Sigma_\phi(\b x_n))$ according to 
+$$
+\b z_n^* = \b \mu_\phi(\b x_n) + \b\Sigma_\phi(\b x_n))^{1/2}  \odot \epsilon
+$$ to obtain the sample. Now, $\phi$ does no longer have a path in the computation graph that goes through the sampling procedure.
+\subsubsection*{Question 1.9}
+
 \bibliographystyle{abbrv}
 \bibliography{references.bib}
 \end{document}

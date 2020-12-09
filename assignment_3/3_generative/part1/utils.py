@@ -15,6 +15,7 @@
 ################################################################################
 
 import torch
+import torchvision
 from torchvision.utils import make_grid
 import numpy as np
 from scipy.stats import norm
@@ -31,9 +32,8 @@ def sample_reparameterize(mean, std):
         z - A sample of the distributions, with gradient support for both mean and std. 
             The tensor should have the same shape as the mean and std input tensors.
     """
-
-    z = None
-    raise NotImplementedError
+    epsilon = torch.normal(torch.zeros_like(mean), torch.ones_like(std))
+    z = mean + std * epsilon
     return z
 
 
@@ -48,9 +48,8 @@ def KLD(mean, log_std):
         KLD - Tensor with one less dimension than mean and log_std (summed over last dimension).
               The values represent the Kullback-Leibler divergence to unit Gaussians.
     """
-
-    KLD = None
-    raise NotImplementedError
+    std_squared = torch.exp(log_std) ** 2
+    KLD = torch.sum(1 / 2 * (std_squared + mean ** 2 - 1 - torch.log(std_squared)), dim=-1)
     return KLD
 
 
@@ -63,8 +62,7 @@ def elbo_to_bpd(elbo, img_shape):
     Outputs:
         bpd - The negative log likelihood in bits per dimension for the given image.
     """
-    bpd = None
-    raise NotImplementedError
+    bpd = torch.sum(elbo) * torch.log2(torch.exp(torch.tensor(1))) / (img_shape[1] * img_shape[2] * img_shape[3])
     return bpd
 
 
@@ -88,8 +86,16 @@ def visualize_manifold(decoder, grid_size=20):
     # - torch.meshgrid might be helpful for creating the grid of values
     # - You can use torchvision's function "make_grid" to combine the grid_size**2 images into a grid
     # - Remember to apply a sigmoid after the decoder
+    percentiles = torch.linspace(0.5, grid_size + 0.5, steps=grid_size) / (grid_size + 1)
+    z_1, z_2 = torch.meshgrid(percentiles, percentiles)
+    images = []
+    for i in range(grid_size):
+        for j in range(grid_size):
+            latent = torch.cat((z_1[i], z_2[j]), dim=-1)
+            decoder_output = decoder(latent)
+            image = torch.sigmoid(decoder_output)
+            images.append(image)
 
-    img_grid = None
-    raise NotImplementedError
+    img_grid = torchvision.utils.make_grid(images, nrow=grid_size)
 
     return img_grid

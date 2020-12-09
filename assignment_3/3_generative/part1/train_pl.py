@@ -45,7 +45,7 @@ class VAE(pl.LightningModule):
         """
         super().__init__()
         self.save_hyperparameters()
-
+        self.bce_loss = nn.BCEWithLogitsLoss()
         if model_name == 'MLP':
             self.encoder = MLPEncoder(z_dim=z_dim, hidden_dims=hidden_dims)
             self.decoder = MLPDecoder(z_dim=z_dim, hidden_dims=hidden_dims[::-1])
@@ -64,11 +64,15 @@ class VAE(pl.LightningModule):
             bpd - The average bits per dimension metric of the batch.
                   This is also the loss we train on. Shape: single scalar
         """
-
-        L_rec = None
-        L_reg = None
-        bpd = None
-        raise NotImplementedError
+        mean, log_std = self.encoder(imgs)
+        latent = sample_reparameterize(mean, torch.exp(log_std))
+        decoded = self.decoder(latent)
+        L_rec_n = self.bce_loss(decoded, imgs)
+        L_reg_n = KLD(mean, log_std)
+        L_rec = torch.mean(L_rec_n)
+        L_reg = torch.mean(L_reg_n)
+        elbo = -1 * (L_rec_n + L_reg_n)
+        bpd = elbo_to_bpd(elbo, imgs.shape)
         return L_rec, L_reg, bpd
 
     @torch.no_grad()
@@ -83,9 +87,10 @@ class VAE(pl.LightningModule):
                      between 0 and 1 from which we obtain "x_samples".
                      Shape: [B,C,H,W]
         """
-        x_mean = None
-        x_samples = None
-        raise NotImplementedError
+        latents = sample_reparameterize(torch.zeros(batch_size, self.hparams.z_dim), torch.ones(batch_size, self.hparams.z_dim))
+        x_logits = self.decoder(latents)
+        x_mean = torch.sigmoid(x_logits)
+        x_samples = (x_mean > 0.5).type(torch.float)
         return x_samples, x_mean
 
     def configure_optimizers(self):
@@ -155,7 +160,15 @@ class GenerateCallback(pl.Callback):
         # - Use the torchvision function "make_grid" to create a grid of multiple images
         # - Use the torchvision function "save_image" to save an image grid to disk
 
-        raise NotImplementedError
+        samples, means = pl_module.sample(self.batch_size)
+        sample_grid = torchvision.utils.make_grid(samples)
+        mean_grid = torchvision.utils.make_grid(means)
+        trainer.logger.experiment.add_image("Sample images", sample_grid, epoch)
+        trainer.logger.experiment.add_image("Mean images", mean_grid, epoch)
+        if self.save_to_disk:
+            torchvision.utils.save_image(samples.type(torch.float), trainer.logger.log_dir + "sample_grid.jpg")
+            torchvision.utils.save_image(means, trainer.logger.log_dir + "mean_grid.jpg")
+
 
 
 def train_vae(args):
@@ -233,7 +246,7 @@ if __name__ == '__main__':
                         help='Max number of epochs')
     parser.add_argument('--seed', default=42, type=int,
                         help='Seed to use for reproducing results')
-    parser.add_argument('--num_workers', default=4, type=int,
+    parser.add_argument('--num_workers', default=0, type=int,
                         help='Number of workers to use in the data loaders. To have a truly deterministic run, this has to be 0. ' + \
                              'For your assignment report, you can use multiple workers (e.g. 4) and do not have to '
                              'set it to 0.')
